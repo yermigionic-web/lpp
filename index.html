@@ -1,0 +1,3306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="세르반(Servan) — 낡았지만 죽지 않은 나라. 어린 왕자의 메아리를 품은 세계관과 사람들." />
+<meta name="theme-color" content="#07191C" />
+<title>SERVAN · 세르반</title>
+<link rel="icon" href="logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!--
+  서체 선택의 근거
+  · Bodoni Moda   : 18–19세기 왕립 인쇄소의 디도 활자. 세르반의 도판집 표제에.
+  · Hahmlet       : 획 대비가 강한 명조. 각인된 듯한 한글 표제용.
+  · Gowun Batang  : 눈에 편한 본문 명조. 긴 기록을 읽히게.
+  · Spline Sans Mono : 카드 카탈로그와 계기판의 등폭 활자. 번호·수치·라벨 전용.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Gowun+Batang:wght@400;700&family=Hahmlet:wght@300;400;500;600&family=Spline+Sans+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+/*
+  색은 장식이 아니라 역할로 쓴다.
+    종이(warm grey) … 시간이 지난 자리. 모든 바탕.
+    바다(mint)      … 물·유리·기계. 살아 움직이는 것에만.
+    잉크(burgundy)  … 기록·장미·봉랍. 사람이 남긴 것에만.
+    황동(brass)     … 항해와 천문 기구의 금속. 위 셋을 잇는 이음선.
+*/
+:root {
+  /* 종이 — 누렇게 익은 랙 페이퍼 */
+  --paper:    #EBE3D5;
+  --paper-2:  #E1D7C6;
+  --paper-3:  #CFC2AC;
+  --paper-4:  #B9A98E;
+
+  /* 잉크 글자 */
+  --ink:      #1F1A16;
+  --ink-2:    #473F36;
+  --grey:     #8A7F70;
+  --grey-2:   #635B4F;
+
+  /* 바다·유리·기계 */
+  --mint:     #35D3B5;
+  --mint-2:   #8DEAD7;
+  --mint-3:   #0F7566;
+  --mint-4:   #073F39;
+
+  /* 기록·장미·봉랍 */
+  --burg:     #79202F;
+  --burg-2:   #46111C;
+  --burg-3:   #A9555F;
+
+  /* 황동 — 기구의 금속 */
+  --brass:    #A9834A;
+  --brass-2:  #DEC08A;
+  --brass-3:  #6B4E23;
+
+  /* 밤 — 항구의 하늘 */
+  --night:    #05141A;
+  --night-2:  #0A292E;
+  --night-3:  #14474A;
+
+  --oxide:    #8A4527;   /* 지도에 쓰는 산화 적갈 잉크 */
+
+  --display:  "Bodoni Moda", "Hahmlet", Georgia, serif;
+  --head-ko:  "Hahmlet", "Gowun Batang", serif;
+  --serif-ko: "Gowun Batang", "Hahmlet", "Nanum Myeongjo", serif;
+  --serif-en: "Bodoni Moda", "Gowun Batang", Georgia, serif;
+  --sans:     "Spline Sans Mono", "IBM Plex Mono", ui-monospace, monospace;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-h: 68px;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  /* 종이는 한 겹이 아니다: 바탕색 + 섬유의 얼룩 + 오래 눌린 자리 */
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse 90% 55% at 12% 4%, rgba(169, 131, 74, 0.09), transparent 62%),
+    radial-gradient(ellipse 80% 50% at 92% 30%, rgba(121, 32, 47, 0.05), transparent 60%),
+    radial-gradient(ellipse 70% 45% at 50% 100%, rgba(15, 117, 102, 0.05), transparent 65%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--serif-ko);
+  font-size: 16.5px;
+  line-height: 1.9;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+body.locked { overflow: hidden; }
+
+h1, h2, h3, h4, p, figure, blockquote { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button {
+  font: inherit; color: inherit; margin: 0;
+  background: none; border: 0; cursor: pointer;
+}
+:focus-visible { outline: 2px solid var(--mint-3); outline-offset: 3px; }
+
+::selection { background: rgba(124, 43, 56, 0.18); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--paper-2); }
+::-webkit-scrollbar-thumb { background: var(--paper-3); border-radius: 99px; border: 2px solid var(--paper-2); }
+::-webkit-scrollbar-thumb:hover { background: var(--grey); }
+
+/* 질감 1 — 종이 섬유의 잔입자 */
+#grain {
+  position: fixed; inset: 0; z-index: 1;
+  pointer-events: none; opacity: 0.5; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+}
+
+/* 질감 2 — 오래 접어 둔 책의 그늘. 화면 가장자리로 갈수록 어둡다 */
+#vignette {
+  position: fixed; inset: 0; z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 130% 100% at 50% 50%, transparent 52%, rgba(31, 26, 22, 0.14) 100%),
+    linear-gradient(90deg, rgba(31, 26, 22, 0.07), transparent 9%, transparent 91%, rgba(31, 26, 22, 0.07));
+}
+
+/* ============================================================
+   TYPE HELPERS
+   ============================================================ */
+/* 라벨 — 카드 카탈로그의 등폭 활자. 앞의 황동 눈금은 도판 표식 */
+.label {
+  display: inline-flex; align-items: center; gap: 0.6em;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--brass-3);
+}
+.label::before {
+  content: ""; width: 14px; height: 1px; flex: none;
+  background: var(--brass); box-shadow: 0 3px 0 var(--brass);
+}
+.label.on-dark { color: var(--brass-2); }
+.label.on-dark::before { background: var(--brass-2); box-shadow: 0 3px 0 var(--brass-2); }
+
+/* 도판 번호 — 이 페이지가 몇 번째 판인지 */
+.plate-no {
+  display: flex; align-items: baseline; gap: 0.75rem;
+  font-family: var(--sans); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 0.9rem;
+}
+.plate-no i {
+  font-style: italic; font-size: 1.5rem; font-weight: 500;
+  font-family: var(--display); letter-spacing: 0.02em; color: var(--burg);
+  line-height: 1;
+}
+.plate-no s { text-decoration: none; flex: 1; height: 1px; background: linear-gradient(90deg, var(--brass), transparent); opacity: 0.5; }
+
+.rule {
+  display: flex; align-items: center; gap: 0.9rem;
+  font-family: var(--sans); font-size: 0.6rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--grey);
+}
+.rule::before, .rule::after {
+  content: ""; height: 1px; flex: 1;
+  background: linear-gradient(90deg, transparent, var(--paper-4) 22%, var(--paper-4) 78%, transparent);
+}
+
+/* 표제 — 한글은 각인된 명조, 아래 프랑스어는 인쇄소의 디도 이탤릭 */
+h2.title {
+  position: relative;
+  font-family: var(--head-ko);
+  font-weight: 600;
+  font-size: clamp(1.85rem, 4.2vw, 2.95rem);
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+  color: var(--burg-2);
+}
+h2.title .en {
+  display: block;
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.4em;
+  letter-spacing: 0.1em;
+  color: var(--mint-3);
+  margin-top: 0.8rem;
+}
+
+/* 유령 문자 — 판을 겹쳐 찍었을 때 남는 앞 판의 흔적 */
+.ghost {
+  position: absolute; z-index: -1; pointer-events: none;
+  font-family: var(--display); font-style: italic; font-weight: 400;
+  font-size: clamp(4.5rem, 13vw, 10rem);
+  line-height: 0.8; letter-spacing: -0.02em;
+  color: var(--ink); opacity: 0.045;
+  white-space: nowrap; user-select: none;
+}
+.lede {
+  font-size: 1.06rem;
+  color: var(--ink-2);
+  max-width: 40em;
+}
+.fr {
+  font-family: var(--serif-en);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--mint-3);
+  letter-spacing: 0.02em;
+}
+
+/* ornament */
+.orn { display: flex; justify-content: center; padding: 0.5rem 0; }
+.orn svg { width: 120px; height: 18px; }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.wrap { width: min(1160px, 90vw); margin-inline: auto; }
+.wrap-narrow { width: min(820px, 90vw); margin-inline: auto; }
+
+section.band { position: relative; z-index: 2; padding: clamp(5rem, 9vw, 8.5rem) 0; scroll-margin-top: var(--nav-h); }
+
+/* 장부의 괘선 — 기록의 나라이므로, 바탕에 옅은 줄이 그어져 있다 */
+section.band.tinted {
+  background-color: var(--paper-2);
+  background-image: repeating-linear-gradient(0deg, rgba(31, 26, 22, 0.032) 0 1px, transparent 1px 38px);
+}
+section.band.tinted::before,
+section.band.tinted::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--paper-4) 12%, var(--paper-4) 88%, transparent);
+  opacity: 0.55;
+}
+section.band.tinted::before { top: 0; border-bottom: 1px solid rgba(169, 131, 74, 0.2); }
+section.band.tinted::after { bottom: 0; border-top: 1px solid rgba(169, 131, 74, 0.2); }
+
+/* 판면 — 동판을 눌러 찍은 자국. 겉 괘선 / 눌린 틈 / 안 괘선 세 겹 */
+.plate {
+  position: relative;
+  border: 1px solid var(--paper-4);
+  box-shadow:
+    inset 0 0 0 5px rgba(235, 227, 213, 0.9),
+    inset 0 0 0 6px rgba(169, 131, 74, 0.32),
+    inset 0 0 26px rgba(31, 26, 22, 0.07),
+    0 18px 40px -28px rgba(31, 26, 22, 0.5);
+}
+.plate.on-dark {
+  border-color: rgba(169, 131, 74, 0.4);
+  box-shadow:
+    inset 0 0 0 5px rgba(5, 20, 26, 0.85),
+    inset 0 0 0 6px rgba(169, 131, 74, 0.28),
+    inset 0 0 34px rgba(0, 0, 0, 0.5),
+    0 22px 50px -30px rgba(0, 0, 0, 0.8);
+}
+/* 판의 네 귀퉁이 표식 — 인쇄공이 판을 맞출 때 쓰는 자리 */
+.plate > .tick {
+  position: absolute; width: 9px; height: 9px; pointer-events: none; z-index: 3;
+  border-color: var(--brass); opacity: 0.65;
+}
+.plate > .tick.tl { top: 10px; left: 10px; border-top: 1px solid; border-left: 1px solid; }
+.plate > .tick.tr { top: 10px; right: 10px; border-top: 1px solid; border-right: 1px solid; }
+.plate > .tick.bl { bottom: 10px; left: 10px; border-bottom: 1px solid; border-left: 1px solid; }
+.plate > .tick.br { bottom: 10px; right: 10px; border-bottom: 1px solid; border-right: 1px solid; }
+
+.head-block { max-width: 46em; }
+.head-block .label { margin-bottom: 1.1rem; }
+.head-block .lede { margin-top: 1.5rem; }
+
+/* reveal */
+.rv { opacity: 1; }
+body.io .rv {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 1s var(--ease), transform 1s var(--ease);
+}
+body.io .rv.in { opacity: 1; transform: none; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+/* 버튼은 알약이 아니라 각인된 명패다.
+   모서리는 각지고, 안쪽에 판 자국이 있고, 누르면 실제로 눌린다. */
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 0.75rem;
+  padding: 0.88rem 1.6rem;
+  border-radius: 1px;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: transform 0.35s var(--ease), background 0.4s, color 0.4s, border-color 0.4s, box-shadow 0.4s;
+}
+.btn svg { width: 14px; height: 14px; flex: none; transition: transform 0.45s var(--ease); }
+.btn:hover svg { transform: translateX(3px); }
+.btn:active { transform: translateY(1px); }
+
+.btn-fill {
+  background: var(--burg);
+  color: #F4EBE2;
+  box-shadow:
+    inset 0 0 0 1px rgba(222, 192, 138, 0.45),
+    inset 0 0 0 4px var(--burg),
+    inset 0 0 0 5px rgba(222, 192, 138, 0.22),
+    0 12px 28px -14px rgba(70, 17, 28, 0.9);
+}
+.btn-fill:hover {
+  background: var(--burg-2);
+  box-shadow:
+    inset 0 0 0 1px var(--brass-2),
+    inset 0 0 0 4px var(--burg-2),
+    inset 0 0 0 5px rgba(222, 192, 138, 0.35),
+    0 16px 34px -14px rgba(70, 17, 28, 0.95);
+}
+
+.btn-line {
+  border: 1px solid rgba(222, 192, 138, 0.42);
+  color: var(--brass-2);
+  box-shadow: inset 0 0 0 4px transparent;
+}
+.btn-line:hover {
+  border-color: var(--brass-2);
+  background: rgba(169, 131, 74, 0.14);
+  color: #F6E8CC;
+  box-shadow: inset 0 0 0 3px rgba(5, 20, 26, 0.6), inset 0 0 0 4px rgba(222, 192, 138, 0.28);
+}
+
+.btn-line-dark {
+  border: 1px solid var(--paper-4);
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 4px transparent;
+}
+.btn-line-dark:hover {
+  border-color: var(--brass);
+  color: var(--burg);
+  background: rgba(169, 131, 74, 0.1);
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px rgba(169, 131, 74, 0.3);
+}
+
+/* ============================================================
+   SPLASH
+   ============================================================ */
+/* 첫 화면은 천구의(天球儀) 안쪽.
+   경선·위선 격자 + 놋쇠 빛 + 어두운 테두리를 겹쳐 놓아
+   단색 그라디에이션 한 장으로 보이지 않게 한다. */
+#splash {
+  position: fixed; inset: 0; z-index: 200;
+  display: grid; place-items: center;
+  background-color: var(--night);
+  background-image:
+    radial-gradient(ellipse 62% 48% at 50% 40%, rgba(30, 92, 88, 0.85) 0%, rgba(10, 34, 37, 0.9) 52%, transparent 100%),
+    radial-gradient(ellipse 40% 30% at 50% 40%, rgba(169, 131, 74, 0.16), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(141, 234, 215, 0.045) 0 1px, transparent 1px 68px),
+    repeating-linear-gradient(0deg, rgba(141, 234, 215, 0.035) 0 1px, transparent 1px 68px),
+    radial-gradient(ellipse 120% 100% at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.62) 100%);
+  transition: opacity 1.1s var(--ease), visibility 1.1s;
+  cursor: pointer;
+}
+#splash.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.splash-core { position: relative; display: grid; place-items: center; gap: 1.6rem; text-align: center; padding: 2rem; }
+/* 두 개의 궤도. 각각 별 하나를 끌고 서로 반대로 돈다 — 관측 기구의 고리 */
+.splash-ring {
+  position: absolute; top: 50%; left: 50%;
+  width: min(460px, 82vw); aspect-ratio: 1;
+  transform: translate(-50%, -54%);
+  border: 1px solid rgba(141, 234, 215, 0.14);
+  border-radius: 50%;
+  box-shadow: inset 0 0 60px rgba(141, 234, 215, 0.05);
+  animation: rot 72s linear infinite;
+}
+.splash-ring::after {
+  content: ""; position: absolute; top: -4px; left: 50%;
+  width: 7px; height: 7px; margin-left: -3.5px;
+  border-radius: 50%; background: var(--mint);
+  box-shadow: 0 0 14px 3px rgba(53, 211, 181, 0.6);
+}
+.splash-ring.two {
+  width: min(320px, 62vw);
+  border-color: rgba(169, 131, 74, 0.32);
+  animation-duration: 48s; animation-direction: reverse;
+}
+.splash-ring.two::after { background: var(--brass-2); box-shadow: 0 0 14px 3px rgba(222, 192, 138, 0.5); }
+@keyframes rot { to { transform: translate(-50%, -54%) rotate(360deg); } }
+
+.splash-logo {
+  position: relative;
+  width: min(258px, 56vw); aspect-ratio: 1 / 1;
+  opacity: 0; transform: scale(0.94) translateY(12px);
+  animation: rise 1.7s var(--ease) 0.25s forwards;
+  filter: drop-shadow(0 18px 44px rgba(0, 0, 0, 0.45));
+}
+@keyframes rise { to { opacity: 1; transform: none; } }
+
+/* ── 문장(紋章) ────────────────────────────────────────────────
+   logo.png가 있으면 그것을 쓰고, 어떤 이유로든 불러오지 못하면
+   왕립지리원의 인장을 새겨 대신 놓습니다. 빈 자리를 남기지 않기 위해. */
+.mark { position: relative; display: block; }
+.mark .crest { display: block; width: 100%; height: 100%; overflow: visible; }
+.mark .bezel { transform-origin: 60px 60px; animation: bezel 120s linear infinite; }
+@keyframes bezel { to { transform: rotate(360deg); } }
+.mark img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: contain;
+  opacity: 0; transition: opacity 0.9s var(--ease);
+}
+.mark img.loaded { opacity: 1; }
+.mark.has-img .crest { opacity: 0; transition: opacity 0.9s var(--ease); }
+
+.mark-hero {
+  width: min(126px, 26vw); aspect-ratio: 1 / 1;
+  margin-bottom: 1.2rem;
+  animation: bob 7s ease-in-out infinite;
+  filter: drop-shadow(0 14px 34px rgba(0, 0, 0, 0.5));
+}
+.mark-foot { width: 52px; aspect-ratio: 1 / 1; }
+
+.splash-word {
+  position: relative;
+  font-family: var(--serif-en);
+  font-weight: 400;
+  font-size: clamp(1.4rem, 4.4vw, 2.15rem);
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  color: #EDF8F3;
+  opacity: 0;
+  animation: rise 1.4s var(--ease) 0.85s forwards;
+}
+/* 표제 양옆의 황동 괘선 — 표지의 이중선 */
+.splash-word::before, .splash-word::after {
+  content: ""; position: absolute; top: 50%; width: 34px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--brass));
+  box-shadow: 0 4px 0 rgba(169, 131, 74, 0.4);
+}
+.splash-word::before { right: calc(100% + 1.1rem); }
+.splash-word::after { left: calc(100% + 0.4rem); transform: scaleX(-1); }
+.splash-sub {
+  position: relative;
+  font-family: var(--head-ko); font-weight: 300;
+  font-size: 0.86rem;
+  letter-spacing: 0.24em;
+  color: rgba(222, 192, 138, 0.6);
+  opacity: 0;
+  animation: rise 1.4s var(--ease) 1.15s forwards;
+}
+.splash-enter {
+  position: relative;
+  margin-top: 0.6rem;
+  opacity: 0;
+  animation: rise 1.4s var(--ease) 1.55s forwards;
+}
+.splash-note {
+  position: absolute; bottom: 2rem; left: 0; right: 0;
+  text-align: center;
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.58rem; letter-spacing: 0.16em;
+  color: rgba(222, 192, 138, 0.42);
+  opacity: 0; animation: rise 1.4s ease 2s forwards;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding: 0 clamp(1rem, 4vw, 2.4rem);
+  transition: background 0.6s var(--ease), border-color 0.6s, backdrop-filter 0.6s, opacity 0.8s, transform 0.8s var(--ease);
+  border-bottom: 1px solid transparent;
+  opacity: 0; transform: translateY(-100%);
+}
+#nav.ready { opacity: 1; transform: none; }
+#nav.solid {
+  background: rgba(240, 235, 228, 0.82);
+  backdrop-filter: blur(18px) saturate(1.1);
+  border-bottom-color: var(--paper-3);
+}
+
+.nav-mark { display: flex; align-items: center; gap: 0.7rem; }
+.nav-mark .mark { width: 34px; height: 34px; flex: none; }
+.nav-mark span {
+  font-family: var(--serif-en); font-weight: 500;
+  font-size: 1rem; letter-spacing: 0.3em;
+  color: #EAF7F2; transition: color 0.6s;
+}
+#nav.solid .nav-mark span { color: var(--burg-2); }
+
+/* 목차는 배경을 칠하지 않는다. 현재 장에만 황동 밑줄이 그어진다 —
+   책갈피를 끼운 자리처럼. */
+.nav-menu { display: flex; align-items: center; gap: 0.1rem; }
+.nav-menu button {
+  position: relative;
+  padding: 0.55rem 0.85rem;
+  font-family: var(--head-ko); font-weight: 400;
+  font-size: 0.86rem; letter-spacing: 0.02em;
+  color: rgba(234, 247, 242, 0.66);
+  transition: color 0.35s;
+}
+.nav-menu button::after {
+  content: ""; position: absolute; left: 0.85rem; right: 0.85rem; bottom: 0.28rem;
+  height: 1px; background: var(--brass-2);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.45s var(--ease);
+}
+.nav-menu button:hover { color: #fff; }
+.nav-menu button:hover::after { transform: scaleX(0.4); }
+.nav-menu button.on { color: #fff; }
+.nav-menu button.on::after { transform: scaleX(1); }
+#nav.solid .nav-menu button { color: var(--grey-2); }
+#nav.solid .nav-menu button::after { background: var(--brass); }
+#nav.solid .nav-menu button:hover, #nav.solid .nav-menu button.on { color: var(--burg); }
+
+.nav-burger {
+  display: none;
+  width: 40px; height: 40px;
+  border: 1px solid rgba(234, 247, 242, 0.3);
+  border-radius: 10px;
+  place-items: center;
+}
+.nav-burger span { display: block; width: 16px; height: 1px; background: #EAF7F2; box-shadow: 0 5px 0 #EAF7F2, 0 -5px 0 #EAF7F2; }
+#nav.solid .nav-burger { border-color: rgba(42, 36, 32, 0.25); }
+#nav.solid .nav-burger span { background: var(--ink); box-shadow: 0 5px 0 var(--ink), 0 -5px 0 var(--ink); }
+
+/* right rail */
+#rail {
+  position: fixed; right: 1.6rem; top: 50%; z-index: 80;
+  transform: translateY(-50%);
+  display: grid; gap: 1.1rem;
+  opacity: 0; transition: opacity 0.8s;
+}
+#rail.ready { opacity: 1; }
+#rail button { display: flex; align-items: center; gap: 0.7rem; flex-direction: row-reverse; }
+#rail .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--paper-3);
+  border: 1px solid var(--grey);
+  transition: background 0.4s, transform 0.4s, border-color 0.4s;
+}
+#rail .txt {
+  font-family: var(--sans); font-size: 0.6rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--grey-2);
+  opacity: 0; transform: translateX(6px);
+  transition: opacity 0.4s, transform 0.4s;
+  white-space: nowrap;
+}
+#rail button:hover .txt { opacity: 1; transform: none; }
+#rail button.on .dot { background: var(--burg); border-color: var(--burg); transform: scale(1.35); }
+#rail button.on .txt { opacity: 1; transform: none; color: var(--burg); }
+/* ============================================================
+   HERO
+   ============================================================ */
+#home {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--night);
+  isolation: isolate;
+}
+#home .hero-sky { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+#home .hero-sky svg { position: absolute; left: 0; top: -10%; width: 100%; height: 120%; }
+
+/* 본문 가독성을 위한 스크림 */
+#home .hero-scrim {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    radial-gradient(ellipse 42% 17% at 50% 64%, rgba(3, 17, 21, 0.88) 0%, rgba(3, 17, 21, 0.52) 46%, rgba(3, 17, 21, 0) 78%),
+    radial-gradient(ellipse 64% 46% at 50% 38%, rgba(4, 20, 24, 0.7) 0%, rgba(4, 20, 24, 0.38) 48%, rgba(4, 20, 24, 0) 76%),
+    linear-gradient(180deg, rgba(4, 20, 24, 0.5) 0%, rgba(4, 20, 24, 0) 24%);
+}
+
+#home .stars { position: absolute; inset: 0 0 42% 0; z-index: 1; pointer-events: none; }
+#home .stars i {
+  position: absolute; border-radius: 50%;
+  background: #E8FBF3;
+  animation: tw var(--dur, 5s) ease-in-out infinite;
+  animation-delay: var(--dl, 0s);
+}
+@keyframes tw {
+  0%, 100% { opacity: 0.08; transform: scale(0.7); }
+  50% { opacity: 0.95; transform: scale(1.15); }
+}
+
+#home .leaves { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+#home .leaves svg {
+  position: absolute; top: -6%;
+  width: 15px; height: 15px;
+  opacity: 0;
+  animation: leaf var(--dur, 18s) linear infinite;
+  animation-delay: var(--dl, 0s);
+}
+@keyframes leaf {
+  0% { transform: translate3d(0, -14vh, 0) rotate(0deg); opacity: 0; }
+  10% { opacity: var(--op, 0.5); }
+  86% { opacity: var(--op, 0.5); }
+  100% { transform: translate3d(var(--dx, 40px), 116vh, 0) rotate(540deg); opacity: 0; }
+}
+
+.hero-inner {
+  position: relative; z-index: 4;
+  text-align: center;
+  padding: calc(var(--nav-h) + 2rem) 1.5rem 9.5rem;
+  display: grid; justify-items: center; gap: 0.2rem;
+}
+.hero-logo {
+  width: min(122px, 25vw);
+  margin-bottom: 1.1rem;
+  animation: bob 7s ease-in-out infinite;
+  filter: drop-shadow(0 14px 34px rgba(0, 0, 0, 0.5));
+}
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* 표제는 세 장의 판을 겹쳐 찍는다. 판이 미세하게 어긋나
+   청록 판과 자주 판이 글자 밖으로 삐져나온다 — 세르반 인쇄소의 습관. */
+.hero-word {
+  position: relative;
+  font-family: var(--serif-en);
+  font-weight: 400;
+  font-size: clamp(2.7rem, 9.6vw, 6.1rem);
+  line-height: 0.98;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  color: #F2FBF7;
+  text-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+}
+.hero-word::before, .hero-word::after {
+  content: attr(data-word);
+  position: absolute; inset: 0; z-index: -1;
+  letter-spacing: inherit; text-indent: inherit;
+  pointer-events: none;
+}
+.hero-word::before { color: var(--mint); opacity: 0.55; transform: translate(-0.055em, 0.02em); }
+.hero-word::after  { color: var(--burg-3); opacity: 0.5; transform: translate(0.04em, -0.022em); }
+
+/* 도판 여백의 측정값 — 지리원이 판마다 적어 두는 좌표 */
+.hero-coord {
+  display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; justify-content: center;
+  margin-top: 1.5rem;
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.56rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(222, 192, 138, 0.62);
+}
+.hero-coord s { text-decoration: none; width: 26px; height: 1px; background: rgba(222, 192, 138, 0.4); }
+.hero-ko {
+  font-family: var(--head-ko); font-weight: 300;
+  font-size: clamp(0.88rem, 2.6vw, 1.1rem);
+  letter-spacing: 0.62em;
+  text-indent: 0.62em;
+  color: var(--brass-2);
+  margin-top: 1rem;
+}
+/* 표제와 본문을 잇는 선. 가운데에 작은 별 하나 — 각자의 별. */
+.hero-line {
+  position: relative;
+  width: 1px; height: 40px;
+  margin: 1.4rem 0 1.2rem;
+  background: linear-gradient(180deg, transparent, rgba(222, 192, 138, 0.55), transparent);
+}
+.hero-line::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 4px; height: 4px; margin: -2px 0 0 -2px;
+  background: var(--mint-2);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px 2px rgba(141, 234, 215, 0.5);
+}
+.hero-tag {
+  font-size: clamp(0.95rem, 2.1vw, 1.06rem);
+  line-height: 1.95;
+  color: rgba(235, 248, 243, 0.9);
+  max-width: 24em;
+  text-shadow: 0 2px 14px rgba(3, 17, 21, 0.9);
+}
+.hero-tag b { color: #FFF; font-weight: 400; }
+.hero-acts { display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; margin-top: 1.9rem; }
+
+.hero-cue {
+  position: absolute; bottom: 1.8rem; left: 50%; z-index: 5;
+  transform: translateX(-50%);
+  display: grid; justify-items: center; gap: 0.6rem;
+  font-family: var(--sans); font-weight: 200;
+  font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(232, 246, 240, 0.45);
+}
+.hero-cue .bar {
+  width: 1px; height: 34px;
+  background: linear-gradient(180deg, rgba(155, 240, 221, 0.7), transparent);
+  animation: cue 2.4s ease-in-out infinite;
+}
+@keyframes cue { 0%, 100% { transform: scaleY(0.4); opacity: 0.4; transform-origin: top; } 50% { transform: scaleY(1); opacity: 1; transform-origin: top; } }
+
+/* SMIL-driven hero pieces */
+.lamp-glow { animation: flick 4.5s ease-in-out infinite; }
+@keyframes flick { 0%, 100% { opacity: 0.55; } 45% { opacity: 1; } 60% { opacity: 0.7; } }
+
+.win rect { animation: wtw 7s ease-in-out infinite; }
+.win rect:nth-child(3n) { animation-delay: 1.7s; }
+.win rect:nth-child(4n) { animation-delay: 3.2s; }
+.win rect:nth-child(5n) { animation-delay: 4.6s; }
+@keyframes wtw { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.3; } }
+
+/* ============================================================
+   PRINCE
+   ============================================================ */
+.prince-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+  margin-top: 3.4rem;
+}
+/* 세 단락은 세로로 잇는다. 왼쪽 여백에 황동 실선이 지나가고,
+   숫자는 그 선 위에 놓인 표식이 된다 — 목록이 아니라 하나의 줄기. */
+.steps { position: relative; display: grid; gap: 0; padding-left: 0.2rem; }
+.steps::before {
+  content: ""; position: absolute; left: 15px; top: 1.9rem; bottom: 1.9rem;
+  width: 1px; background: linear-gradient(180deg, transparent, var(--brass) 8%, var(--brass) 92%, transparent);
+  opacity: 0.42;
+}
+.step {
+  position: relative;
+  display: grid; grid-template-columns: 32px 1fr; gap: 1.35rem;
+  padding: 1.5rem 0 1.5rem 0;
+}
+.step + .step { border-top: 1px solid var(--paper-3); }
+.step .num {
+  position: relative; z-index: 1;
+  display: grid; place-items: center;
+  width: 31px; height: 31px;
+  background: var(--paper-2);
+  border: 1px solid var(--brass);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--paper-2), inset 0 0 0 3px rgba(169, 131, 74, 0.22);
+  font-family: var(--display);
+  font-size: 0.9rem; font-weight: 500; font-style: italic;
+  color: var(--burg);
+  line-height: 1;
+}
+.step h3 {
+  font-family: var(--head-ko); font-weight: 600;
+  font-size: 1.04rem; letter-spacing: -0.02em; color: var(--burg-2);
+  margin-bottom: 0.4rem;
+}
+.step p { font-size: 0.95rem; color: var(--ink-2); }
+
+/* 삽화는 도판이므로 판면을 두른다 */
+.drawing {
+  background: linear-gradient(160deg, #F1EADC, #E2D8C6);
+  padding: 1.9rem 1.7rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: box-shadow 0.5s, transform 0.5s var(--ease);
+}
+.drawing:hover { transform: translateY(-3px); }
+.drawing svg { width: 100%; height: auto; margin-inline: auto; max-width: 340px; }
+.drawing .caption {
+  margin-top: 1rem;
+  font-size: 0.94rem;
+  color: var(--ink-2);
+  min-height: 3.4em;
+}
+.drawing .hint {
+  font-family: var(--sans); font-weight: 400;
+  font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--brass-3);
+}
+#boa { opacity: 0; transition: opacity 0.7s var(--ease); }
+.drawing.revealed #boa { opacity: 1; }
+
+/* 가장 유명한 한 문장. 판을 크게 비우고 위아래를 이중 괘선으로 막는다. */
+blockquote.pull {
+  position: relative;
+  margin-top: 3.4rem;
+  padding: 3rem 1rem 2.6rem;
+  text-align: center;
+  border-top: 3px double var(--paper-4);
+  border-bottom: 3px double var(--paper-4);
+}
+blockquote.pull::before {
+  content: "⁂";
+  position: absolute; top: -0.72em; left: 50%; transform: translateX(-50%);
+  padding: 0 0.7rem;
+  background: var(--paper);
+  font-size: 0.86rem; color: var(--brass);
+}
+section.band.tinted blockquote.pull::before { background: var(--paper-2); }
+blockquote.pull p {
+  font-family: var(--head-ko); font-weight: 400;
+  font-size: clamp(1.1rem, 2.9vw, 1.6rem);
+  line-height: 1.85; letter-spacing: -0.03em;
+  color: var(--burg);
+}
+blockquote.pull .src {
+  display: block; margin-top: 1.2rem;
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--grey);
+}
+
+/* ============================================================
+   WORLD
+   ============================================================ */
+/* 표제와 요람을 나란히. 오른쪽 여백을 장식이 아니라 자료로 메운다. */
+.world-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(250px, 0.85fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+}
+.fiche {
+  padding: 1.5rem 1.4rem 1.2rem;
+  background: linear-gradient(160deg, #EFE8DA, #E0D6C3);
+  margin-top: 0.4rem;
+}
+.fiche-hd {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem;
+  padding-bottom: 0.7rem; margin-bottom: 0.2rem;
+  border-bottom: 1px solid var(--brass);
+  font-family: var(--sans); font-weight: 400;
+  font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--brass-3);
+}
+.fiche-hd em { font-family: var(--head-ko); font-style: normal; font-weight: 600; font-size: 0.9rem; letter-spacing: 0; color: var(--burg-2); text-transform: none; }
+.fiche dl { display: grid; }
+.fiche dl > div {
+  display: grid; grid-template-columns: 5.4em 1fr; gap: 0.7rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px dotted rgba(31, 26, 22, 0.16);
+}
+.fiche dt {
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.58rem; letter-spacing: 0.06em;
+  color: var(--grey-2); padding-top: 0.18rem;
+}
+.fiche dd { font-size: 0.86rem; line-height: 1.6; color: var(--ink); }
+.fiche dd span { font-family: var(--serif-en); font-style: italic; font-size: 0.82rem; color: var(--mint-3); }
+.fiche-ft {
+  margin-top: 0.9rem; text-align: right;
+  font-family: var(--serif-en); font-style: italic;
+  font-size: 0.76rem; color: var(--brass-3); opacity: 0.85;
+}
+
+/* 세 신조 — 배경을 칠하지 않고 위쪽 황동 괘선과 여백으로만 구분한다.
+   벽에 붙은 세 장의 게시문처럼. */
+.creed { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 3.2rem; }
+.creed article {
+  position: relative;
+  padding: 1.9rem 1.7rem 1.7rem;
+  border-top: 1px solid var(--brass);
+}
+.creed article + article { border-left: 1px solid var(--paper-3); }
+.creed article::before {
+  content: ""; position: absolute; top: -1px; left: 0; width: 34%; height: 3px;
+  background: var(--burg); opacity: 0.8;
+}
+.creed .ic { width: 32px; height: 32px; color: var(--burg); margin-bottom: 1rem; }
+.creed h3 {
+  font-family: var(--head-ko); font-weight: 600;
+  font-size: 1rem; letter-spacing: -0.02em; color: var(--burg-2); margin-bottom: 0.45rem;
+}
+.creed p { font-size: 0.92rem; color: var(--ink-2); }
+
+/* 지도는 접어 끼운 도판. 한가운데 접힌 자국이 남아 있다. */
+.map-shell {
+  position: relative;
+  margin-top: 3.4rem;
+  padding: clamp(1rem, 2.2vw, 1.9rem);
+  background:
+    linear-gradient(150deg, #F0E9DB, #DFD5C2);
+}
+.map-shell::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 22px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(31, 26, 22, 0.055) 42%, rgba(255, 252, 245, 0.5) 50%, rgba(31, 26, 22, 0.055) 58%, transparent);
+  pointer-events: none; z-index: 2;
+}
+.map-shell .frame {
+  position: relative; z-index: 1;
+  border: 1px solid rgba(121, 32, 47, 0.3);
+  padding: 0.55rem;
+  box-shadow: inset 0 0 0 1px rgba(169, 131, 74, 0.3);
+}
+#map { width: 100%; height: auto; touch-action: manipulation; display: block; }
+/* 도판 아래 각자(刻字) — 판을 새긴 사람과 축척 */
+.map-caption {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 0.8rem; margin-top: 0.9rem; padding: 0 0.2rem;
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--brass-3);
+}
+.map-caption em { font-family: var(--serif-en); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--burg); }
+.map-hint { display: none; }
+
+.zone { cursor: pointer; transition: fill 0.45s var(--ease), stroke 0.45s; }
+/* 청록은 바다에만 쓴다. 그래서 지역을 고르면 청록이 아니라 잉크가 짙어진다 —
+   지도 위에 붓으로 한 번 더 칠한 것처럼. */
+.zone-fill { fill: rgba(185, 169, 142, 0.3); stroke: rgba(138, 69, 39, 0.45); stroke-width: 1.2; }
+.zone:hover .zone-fill { fill: rgba(121, 32, 47, 0.12); stroke: var(--burg); }
+.zone.on .zone-fill { fill: rgba(121, 32, 47, 0.2); stroke: var(--burg-2); stroke-width: 2; }
+.zone-name {
+  font-family: var(--head-ko); font-weight: 600; font-size: 15px;
+  fill: var(--burg-2); letter-spacing: 0.06em;
+  pointer-events: none; transition: fill 0.4s;
+}
+.zone-fr {
+  font-family: var(--serif-en); font-style: italic; font-weight: 500; font-size: 11px;
+  fill: rgba(70, 17, 28, 0.62); letter-spacing: 0.05em;
+  pointer-events: none;
+}
+.zone.on .zone-name { fill: var(--burg); }
+.pin { cursor: pointer; }
+.pin circle.halo { fill: rgba(121, 32, 47, 0.14); transition: fill 0.4s, r 0.4s; }
+.pin:hover circle.halo, .pin.on circle.halo { fill: rgba(53, 211, 181, 0.45); }
+.map-deco { pointer-events: none; }
+
+/* 지역 패널 — 도판에서 뽑아낸 별지(別紙). 판면을 두른다. */
+#region {
+  margin-top: 1.8rem;
+  display: none;
+  background: var(--paper);
+}
+#region.open {
+  display: grid; grid-template-columns: minmax(240px, 0.85fr) 1.15fr;
+  animation: soft 0.6s var(--ease);
+  border: 1px solid var(--paper-4);
+  box-shadow:
+    inset 0 0 0 5px var(--paper),
+    inset 0 0 0 6px rgba(169, 131, 74, 0.3),
+    0 20px 46px -30px rgba(31, 26, 22, 0.6);
+}
+@keyframes soft { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+.figure { display: block; position: relative; overflow: hidden; background: var(--paper-3); min-height: 230px; }
+.figure > svg, .figure > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.figure > img { opacity: 0; transition: opacity 0.9s var(--ease); }
+.figure > img.loaded { opacity: 1; }
+
+.region-body { padding: clamp(1.7rem, 3vw, 2.5rem); }
+.region-body .label { margin-bottom: 0.7rem; }
+.region-body h3 {
+  font-family: var(--head-ko); font-weight: 600;
+  font-size: clamp(1.3rem, 3vw, 1.75rem); letter-spacing: -0.03em; color: var(--burg-2);
+}
+.region-body .fr {
+  display: block; margin: 0.35rem 0 1.15rem;
+  font-family: var(--serif-en); font-style: italic; font-weight: 500;
+  font-size: 0.96rem; color: var(--mint-3);
+}
+.region-body .fr::after {
+  content: ""; display: block; margin-top: 0.85rem;
+  width: 46px; height: 1px; background: var(--brass);
+}
+.region-body p.desc { font-size: 0.98rem; color: var(--ink-2); }
+.region-body .who {
+  margin-top: 1.7rem; padding-top: 1.3rem;
+  border-top: 1px solid var(--paper-3);
+}
+.region-body .who > .rule { margin-bottom: 1.1rem; }
+.chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.7rem; }
+/* 거주민 항목 — 책장에 붙여 넣은(tipped-in) 작은 사진과 손글씨 이름표.
+   원형 아바타를 쓰지 않는다. 인화지는 네모나게 잘린다. */
+.chip {
+  position: relative;
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.55rem 0.9rem 0.55rem 0.55rem;
+  text-align: left;
+  border: 1px solid transparent;
+  border-left: 1px solid var(--paper-4);
+  background: transparent;
+  transition: border-color 0.4s, transform 0.4s var(--ease), background 0.4s;
+}
+.chip:hover {
+  border-color: var(--paper-4);
+  border-left-color: var(--brass);
+  transform: translateX(4px);
+  background: var(--paper);
+}
+.chip .av {
+  width: 42px; height: 52px; flex: none;
+  overflow: hidden; position: relative;
+  background: var(--paper-3);
+  box-shadow: 0 0 0 1px rgba(31, 26, 22, 0.18), 2px 2px 0 0 rgba(185, 169, 142, 0.6);
+  transition: box-shadow 0.4s;
+}
+.chip:hover .av { box-shadow: 0 0 0 1px var(--brass), 3px 3px 0 0 rgba(169, 131, 74, 0.35); }
+.chip .av > svg, .chip .av > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.chip .av > img { opacity: 0; transition: opacity 0.6s; }
+.chip .av > img.loaded { opacity: 1; }
+.chip b {
+  display: block; font-family: var(--head-ko); font-weight: 600;
+  font-size: 0.92rem; letter-spacing: -0.02em; color: var(--burg-2); line-height: 1.45;
+}
+.chip em {
+  font-family: var(--sans); font-style: normal; font-weight: 300;
+  font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey-2);
+}
+.empty-note { font-size: 0.92rem; color: var(--grey-2); }
+
+/* atmosphere marquee */
+.atmos { margin-top: 3.4rem; border-top: 1px solid var(--paper-3); border-bottom: 1px solid var(--paper-3); overflow: hidden; }
+.atmos-track { display: flex; gap: 3rem; padding: 1.15rem 0; width: max-content; animation: slide 46s linear infinite; }
+.atmos-track span {
+  font-family: var(--serif-en); font-style: italic;
+  font-size: 1.02rem; color: var(--grey-2);
+  display: flex; align-items: center; gap: 3rem;
+  white-space: nowrap;
+}
+.atmos-track span::after { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--mint-3); opacity: 0.7; }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* ============================================================
+   PEOPLE
+   ============================================================ */
+/* 기록자의 주(註) — 본문이 아니라 여백에 적힌 말. 그래서 들여쓰고 기울인다. */
+.people-note {
+  position: relative;
+  margin-top: 2.2rem;
+  padding: 0.4rem 0 0.4rem 1.6rem;
+  border-left: 1px solid var(--brass);
+  font-size: 0.93rem;
+  font-style: italic;
+  color: var(--grey-2);
+  max-width: 44em;
+}
+.people-note::before {
+  content: "※";
+  position: absolute; left: -0.62em; top: 0.35rem;
+  font-style: normal; font-size: 0.7rem;
+  background: var(--paper); color: var(--brass);
+  padding: 0.1rem 0;
+}
+section.band.tinted .people-note::before { background: var(--paper-2); }
+
+/* 거주지 색인 — 책 위쪽의 색인 탭. 고른 탭에만 황동 밑줄 */
+.filters {
+  display: flex; flex-wrap: wrap; gap: 0.2rem;
+  margin-top: 2.6rem;
+  border-bottom: 1px solid var(--paper-4);
+}
+.filters button {
+  position: relative;
+  padding: 0.6rem 1rem 0.7rem;
+  font-family: var(--sans); font-weight: 400;
+  font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--grey);
+  transition: color 0.35s;
+}
+.filters button::after {
+  content: ""; position: absolute; left: 0.35rem; right: 0.35rem; bottom: -1px; height: 2px;
+  background: var(--brass);
+  transform: scaleX(0); transform-origin: center;
+  transition: transform 0.45s var(--ease);
+}
+.filters button:hover { color: var(--burg); }
+.filters button:hover::after { transform: scaleX(0.45); }
+.filters button.on { color: var(--burg-2); }
+.filters button.on::after { transform: scaleX(1); background: var(--burg); }
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+  gap: 1.3rem;
+  margin-top: 1.8rem;
+}
+/* 인물 카드 = 목록 서랍에서 꺼낸 표본 카드.
+   그래서 (1) 아래에 다른 카드가 겹쳐 있는 그림자, (2) 좌상단 정리 번호,
+   (3) 올려놓으면 카드가 서랍에서 끌려 나오듯 황동 선이 자란다. */
+.pcard {
+  position: relative;
+  text-align: left;
+  background: var(--paper);
+  border: 1px solid var(--paper-4);
+  border-radius: 2px;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow:
+    2px 2px 0 -1px var(--paper-2),
+    3px 3px 0 0 var(--paper-4),
+    6px 6px 0 -1px var(--paper-2),
+    7px 7px 0 0 rgba(185, 169, 142, 0.55),
+    0 14px 30px -22px rgba(31, 26, 22, 0.6);
+  transition: transform 0.55s var(--ease), box-shadow 0.55s, border-color 0.55s, opacity 0.4s;
+}
+.pcard:hover, .pcard:focus-visible {
+  transform: translate(-4px, -8px);
+  border-color: var(--brass);
+  box-shadow:
+    2px 2px 0 -1px var(--paper-2),
+    3px 3px 0 0 var(--paper-4),
+    6px 6px 0 -1px var(--paper-2),
+    7px 7px 0 0 rgba(185, 169, 142, 0.55),
+    0 30px 54px -26px rgba(31, 26, 22, 0.55);
+}
+.pcard.hide { display: none; }
+.pcard .figure { min-height: 0; aspect-ratio: 3 / 4; }
+/* 초상 위에 얇은 세피아 막 — 오래된 인화지처럼 */
+.pcard .figure::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(169, 131, 74, 0.12), transparent 45%, rgba(31, 26, 22, 0.2));
+  mix-blend-mode: multiply;
+  transition: opacity 0.55s;
+}
+.pcard:hover .figure::after { opacity: 0.35; }
+.pcard .body { display: block; padding: 1.15rem 1.25rem 1.4rem; position: relative; }
+
+/* 정리 번호 — 카드 카탈로그의 청구기호 */
+.pcard .idx {
+  position: absolute; top: 9px; left: 10px; z-index: 3;
+  font-family: var(--sans); font-size: 0.56rem; font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--paper); text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.pcard .em {
+  position: absolute; top: -22px; right: 14px;
+  width: 42px; height: 42px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--brass);
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px rgba(169, 131, 74, 0.25);
+  color: var(--burg);
+  transition: transform 0.6s var(--ease), color 0.4s;
+}
+.pcard:hover .em { transform: rotate(-8deg) scale(1.06); color: var(--mint-3); }
+.pcard .em svg { width: 19px; height: 19px; }
+.pcard .nm {
+  display: block;
+  font-family: var(--head-ko); font-weight: 600;
+  font-size: 1.1rem; line-height: 1.5; letter-spacing: -0.03em;
+  color: var(--burg-2);
+}
+.pcard .en {
+  display: block;
+  font-family: var(--serif-en); font-style: italic; font-weight: 500;
+  font-size: 0.82rem; letter-spacing: 0.01em; color: var(--mint-3);
+  margin-bottom: 0.55rem;
+}
+/* 이름 아래 황동 선. 평소엔 짧고, 손이 닿으면 끝까지 자란다 */
+.pcard .en::after {
+  content: ""; display: block; margin-top: 0.5rem;
+  width: 24px; height: 1px; background: var(--brass);
+  transition: width 0.6s var(--ease);
+}
+.pcard:hover .en::after { width: 100%; }
+.pcard .job {
+  display: block;
+  font-family: var(--sans); font-weight: 400;
+  font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--grey-2);
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+.pcard .tag { display: block; font-size: 0.89rem; line-height: 1.75; color: var(--ink-2); }
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+#modal {
+  position: fixed; inset: 0; z-index: 150;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: clamp(0.75rem, 3vw, 2rem);
+  background: rgba(10, 26, 28, 0.62);
+  backdrop-filter: blur(8px);
+}
+#modal.open { display: flex; animation: soft 0.4s var(--ease); }
+.sheet {
+  position: relative;
+  width: min(900px, 100%);
+  max-height: min(88svh, 860px);
+  overflow: hidden auto;
+  background: var(--paper);
+  border-radius: 1px;
+  border: 1px solid var(--brass-3);
+  box-shadow:
+    inset 0 0 0 5px var(--paper),
+    inset 0 0 0 6px rgba(169, 131, 74, 0.3),
+    0 40px 100px rgba(0, 0, 0, 0.5);
+  display: grid;
+  grid-template-columns: minmax(240px, 0.82fr) 1.18fr;
+  overscroll-behavior: contain;
+}
+.sheet-close {
+  position: absolute; top: 0.85rem; right: 0.85rem; z-index: 3;
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  border-radius: 1px;
+  background: rgba(235, 227, 213, 0.94);
+  border: 1px solid var(--brass);
+  color: var(--ink-2);
+  transition: background 0.3s, color 0.3s;
+}
+.sheet-close:hover { background: var(--burg); color: #F4EBE2; border-color: var(--burg-2); }
+.sheet .figure { min-height: 320px; }
+.sheet-body { padding: clamp(1.7rem, 3.4vw, 2.7rem); }
+.sheet-body h2 {
+  font-family: var(--head-ko); font-weight: 600;
+  font-size: clamp(1.45rem, 3.6vw, 2rem); letter-spacing: -0.035em;
+  color: var(--burg-2); line-height: 1.28;
+}
+.sheet-body .en {
+  font-family: var(--serif-en); font-style: italic; font-weight: 500;
+  font-size: 1rem; color: var(--mint-3); margin: 0.3rem 0 1.3rem;
+}
+/* 신원 항목 — 알약 대신 등폭 활자를 얇은 괘선으로 나눈 한 줄 */
+.meta {
+  display: flex; flex-wrap: wrap; align-items: center;
+  margin-bottom: 1.7rem; padding: 0.6rem 0;
+  border-top: 1px solid var(--paper-4);
+  border-bottom: 1px solid var(--paper-4);
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.63rem; letter-spacing: 0.08em;
+  color: var(--grey-2);
+}
+.meta span { padding: 0.1rem 0.85rem; }
+.meta span + span { border-left: 1px solid var(--paper-4); }
+.meta span.hi { color: var(--burg); font-weight: 500; }
+.field { margin-bottom: 1.55rem; }
+.field > .rule { margin-bottom: 0.65rem; }
+.field p { font-size: 0.97rem; color: var(--ink-2); }
+.field p + p { margin-top: 0.5rem; }
+
+/* 들은 말 — 인용부호를 크게 새겨 넣는다. 그녀의 목소리가 아니라 옮겨진 말이므로. */
+.said {
+  position: relative;
+  margin-top: 2rem;
+  padding: 1.5rem 1.5rem 1.4rem 2.5rem;
+  background: var(--paper-2);
+  border-top: 1px solid var(--brass);
+  border-bottom: 1px solid var(--paper-4);
+}
+.said::before {
+  content: "«";
+  position: absolute; left: 0.7rem; top: 0.85rem;
+  font-family: var(--display); font-size: 2.2rem; line-height: 1;
+  color: var(--brass); opacity: 0.55;
+}
+.said p { font-family: var(--serif-en); font-style: italic; font-size: 1.02rem; line-height: 1.72; color: var(--burg-2); }
+.said span {
+  display: block; margin-top: 0.75rem;
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--grey);
+}
+
+/* ============================================================
+   PLAYER
+   ============================================================ */
+#player { position: fixed; right: clamp(1rem, 3vw, 1.8rem); bottom: clamp(1rem, 3vw, 1.8rem); z-index: 120; }
+/* 재생 단추는 황동 테를 두른 회중시계. 원형인 이유가 있는 유일한 부품 */
+.fab {
+  position: relative;
+  width: 58px; height: 58px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 26%, #93303F, var(--burg) 45%, var(--burg-2));
+  color: #F2E7D6;
+  box-shadow:
+    inset 0 0 0 1px rgba(222, 192, 138, 0.75),
+    inset 0 0 0 4px var(--burg-2),
+    inset 0 0 0 5px rgba(222, 192, 138, 0.4),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.35),
+    0 12px 30px -8px rgba(70, 17, 28, 0.6);
+  transition: transform 0.4s var(--ease);
+}
+.fab:hover { transform: scale(1.06) rotate(-4deg); }
+.fab svg { width: 22px; height: 22px; }
+.fab .ripple {
+  position: absolute; inset: -2px;
+  border-radius: 50%;
+  border: 1px solid rgba(222, 192, 138, 0.8);
+  opacity: 0;
+}
+.fab.playing .ripple { animation: ripple 2.6s ease-out infinite; }
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.85); opacity: 0; }
+}
+.fab.playing .needle { animation: rot2 6s linear infinite; transform-origin: 50% 50%; }
+@keyframes rot2 { to { transform: rotate(360deg); } }
+
+/* 패널은 계기함(instrument case). 종이 위가 아니라 놋쇠 상자 안이므로 어둡다. */
+.panel {
+  position: absolute; right: 0; bottom: calc(100% + 0.85rem);
+  width: min(332px, calc(100vw - 2rem));
+  padding: 1.3rem;
+  background: linear-gradient(165deg, rgba(12, 41, 46, 0.97), rgba(5, 20, 26, 0.98));
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--brass-3);
+  border-radius: 2px;
+  box-shadow:
+    inset 0 0 0 4px rgba(5, 20, 26, 0.9),
+    inset 0 0 0 5px rgba(169, 131, 74, 0.3),
+    inset 0 1px 0 rgba(222, 192, 138, 0.12),
+    0 26px 60px rgba(0, 0, 0, 0.55);
+  display: none;
+}
+.panel.open { display: block; animation: soft 0.35s var(--ease); }
+
+.tune { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.2rem; }
+.disc {
+  width: 52px; height: 52px; flex: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #DEC08A 15%, transparent 16%),
+    repeating-radial-gradient(circle, rgba(222, 192, 138, 0.09) 0 1px, transparent 1px 3px),
+    conic-gradient(from 200deg, #0A292E, var(--mint-4), #2A0C14, #0A292E);
+  box-shadow: inset 0 0 0 1px rgba(222, 192, 138, 0.45), 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+.disc.spin { animation: rot2 4.5s linear infinite; }
+.tune h4 {
+  font-family: var(--head-ko); font-weight: 600;
+  font-size: 1.12rem; letter-spacing: -0.02em; color: #F0E4CE; line-height: 1.35;
+}
+.tune p { font-family: var(--sans); font-weight: 300; font-size: 0.7rem; letter-spacing: 0.06em; color: rgba(222, 192, 138, 0.75); }
+.tune .kind {
+  font-family: var(--sans); font-weight: 400;
+  font-size: 0.54rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(141, 234, 215, 0.65);
+}
+
+.deck { display: flex; align-items: center; gap: 0.75rem; }
+.play {
+  width: 38px; height: 38px; flex: none;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--brass);
+  color: #10262B;
+  box-shadow: inset 0 0 0 1px rgba(240, 228, 206, 0.5), inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s, transform 0.3s;
+}
+.play:hover { background: var(--brass-2); transform: scale(1.06); }
+.play svg { width: 14px; height: 14px; }
+.seek {
+  flex: 1;
+  height: 22px;
+  display: grid; align-content: center;
+  cursor: pointer;
+}
+.seek .track {
+  height: 3px; background: rgba(222, 192, 138, 0.22); overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+.seek .fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--mint), var(--brass-2)); }
+.clock {
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.6rem; letter-spacing: 0.04em; color: rgba(222, 192, 138, 0.7);
+  min-width: 74px; text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.vol { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.95rem; color: rgba(222, 192, 138, 0.6); }
+.vol svg { width: 14px; height: 14px; flex: none; }
+.vol input {
+  -webkit-appearance: none; appearance: none;
+  flex: 1; height: 3px;
+  background: rgba(222, 192, 138, 0.22);
+  cursor: pointer;
+}
+.vol input::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--brass-2); border: 1px solid var(--night);
+}
+.vol input::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--brass-2); border: 1px solid var(--night);
+}
+
+.ly-btn {
+  width: 100%;
+  margin-top: 1.1rem;
+  padding: 0.58rem;
+  border: 1px solid rgba(169, 131, 74, 0.45);
+  border-radius: 1px;
+  font-family: var(--sans); font-weight: 400;
+  font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(222, 192, 138, 0.85);
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
+}
+.ly-btn:hover { border-color: var(--brass-2); color: #F4E8CE; background: rgba(169, 131, 74, 0.14); }
+/* 가사는 종이에 적혀 있다. 계기함 안에 끼워 넣은 한 장. */
+#lyrics {
+  display: none;
+  max-height: 190px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-top: 0.65rem;
+  padding: 1rem 1.05rem;
+  background-color: var(--paper-2);
+  background-image: repeating-linear-gradient(0deg, rgba(31, 26, 22, 0.05) 0 1px, transparent 1px 30px);
+  border: 1px solid var(--brass-3);
+  font-size: 0.88rem;
+  line-height: 1.9;
+  color: var(--ink-2);
+  white-space: pre-line;
+}
+#lyrics.open { display: block; }
+#lyrics .ph { font-family: var(--serif-en); font-style: italic; color: var(--grey); }
+.audio-warn {
+  margin-top: 0.8rem; padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(169, 90, 100, 0.5);
+  background: rgba(121, 32, 47, 0.22);
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.6rem; line-height: 1.75; letter-spacing: 0.02em;
+  color: #F0C9CC;
+  display: none;
+}
+.audio-warn.show { display: block; }
+.audio-warn code {
+  font-family: inherit; color: var(--brass-2);
+  border-bottom: 1px solid rgba(222, 192, 138, 0.4);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+/* 판권장 — 옛 인쇄물의 마지막 장. 누가, 어디서, 무엇으로 찍었는지 */
+footer.foot {
+  position: relative; z-index: 2;
+  background-color: var(--night);
+  background-image:
+    radial-gradient(ellipse 80% 90% at 50% 0%, rgba(15, 117, 102, 0.16), transparent 70%),
+    radial-gradient(ellipse 60% 70% at 50% 100%, rgba(121, 32, 47, 0.14), transparent 70%);
+  color: rgba(232, 246, 240, 0.6);
+  padding: clamp(3.4rem, 7vw, 5.5rem) 0 3rem;
+  text-align: center;
+}
+footer.foot::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--brass) 30%, var(--brass) 70%, transparent);
+  opacity: 0.5;
+}
+footer.foot .mark-foot { margin: 0 auto 1.4rem; }
+footer.foot .word {
+  font-family: var(--serif-en); font-weight: 400;
+  font-size: 1.15rem; letter-spacing: 0.4em; text-indent: 0.4em;
+  color: #EAF7F2;
+}
+footer.foot .fr {
+  display: block; margin-top: 0.9rem;
+  font-family: var(--serif-en); font-style: italic;
+  color: var(--mint-2); opacity: 0.82; font-size: 1.02rem; letter-spacing: 0.01em;
+}
+/* 판권 표 — 등폭 활자로 좌우 정렬한 두 열 */
+footer.foot .colophon {
+  margin: 2.6rem auto 0; max-width: 30em;
+  padding: 1.4rem 0;
+  border-top: 1px solid rgba(169, 131, 74, 0.28);
+  border-bottom: 1px solid rgba(169, 131, 74, 0.28);
+  display: grid; gap: 0.45rem;
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(222, 192, 138, 0.6);
+}
+footer.foot .colophon span { display: flex; justify-content: space-between; gap: 1.4rem; }
+footer.foot .colophon span b { font-weight: 400; color: rgba(232, 246, 240, 0.72); text-align: right; }
+footer.foot .fine {
+  margin-top: 1.8rem;
+  font-family: var(--sans); font-weight: 300;
+  font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(232, 246, 240, 0.34);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1080px) {
+  #rail { display: none; }
+  .prince-grid { grid-template-columns: 1fr; }
+  .world-head { grid-template-columns: 1fr; }
+  .creed { grid-template-columns: 1fr; }
+  .creed article + article { border-left: 0; }
+}
+@media (max-width: 860px) {
+  #region.open, .sheet { grid-template-columns: 1fr; }
+  .sheet .figure { min-height: 0; aspect-ratio: 4 / 3; }
+  .figure { min-height: 0; aspect-ratio: 16 / 9; }
+  .nav-burger { display: grid; }
+  .nav-menu {
+    position: absolute; top: var(--nav-h); left: 0; right: 0;
+    flex-direction: column; align-items: stretch;
+    gap: 0;
+    padding: 0.6rem;
+    background: rgba(240, 235, 228, 0.98);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--paper-3);
+    display: none;
+  }
+  .nav-menu.open { display: flex; }
+  .nav-menu button { color: var(--ink-2) !important; text-align: left; padding: 0.8rem 1rem; }
+}
+/* 좁은 화면에서 도판을 축소하면 지명이 사라집니다.
+   실제 접지도(folded plate)처럼 옆으로 밀어 펼치게 두는 편이 정직합니다. */
+@media (max-width: 720px) {
+  .map-shell .frame { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+  #map { width: 760px; max-width: none; }
+  .map-shell::after { display: none; }
+  .map-caption { font-size: 0.5rem; gap: 0.45rem; justify-content: flex-start; }
+  .map-caption em { font-size: 0.68rem; }
+  .map-hint {
+    display: block; margin-top: 0.5rem;
+    font-family: var(--sans); font-weight: 300;
+    font-size: 0.54rem; letter-spacing: 0.12em;
+    color: var(--grey);
+  }
+}
+@media (max-width: 520px) {
+  body { font-size: 15px; }
+  .hero-word { letter-spacing: 0.09em; text-indent: 0.09em; }
+  .chips { grid-template-columns: 1fr; }
+  /* 판권의 두 열은 좁은 지면에서 위아래로 눕는다 */
+  footer.foot .colophon span { display: block; }
+  footer.foot .colophon span b { display: block; text-align: center; margin-top: 0.2rem; }
+  footer.foot .colophon { gap: 0.9rem; }
+  /* 플레이어가 판권을 가리지 않도록 아래를 비운다 */
+  footer.foot { padding-bottom: 6.5rem; }
+  /* 좁은 판에서는 발행처 이름을 접는다. 어차피 판권장에 한 번 더 적혀 있으므로. */
+  .hero-coord span:nth-of-type(2), .hero-coord s:nth-of-type(2) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+</style>
+</head>
+<body>
+<!--
+  ============================================================
+  나중에 같은 폴더에 올리면 자동으로 교체되는 이미지 파일 목록
+  (없으면 SVG 대체 그림이 그대로 보입니다. 하나씩 올려도 됩니다.)
+
+  · 인물 초상 (세로 3:4 권장)
+      char-ailen.png    char-theona.png   char-miela.png
+      char-savel.png    char-isera.png    char-cassia.png
+      char-orphe.png    char-darion.png   char-yunat.png
+      char-firen.png
+
+  · 지역 배경 (가로 4:3 이상 권장)
+      bg-etherla.png    bg-beluar.png     bg-rosier.png
+      bg-marein.png     bg-wander.png
+
+  · 이미 쓰이는 파일 : logo.png, 물고기.mp3
+  · 가사는 아래 id="lyrics" 안에 붙여넣으세요.
+  ============================================================
+-->
+<div id="grain" aria-hidden="true"></div>
+<div id="vignette" aria-hidden="true"></div>
+<!-- ============================================================
+     SPLASH
+     ============================================================ -->
+<div id="splash" role="button" tabindex="0" aria-label="세르반으로 들어가기">
+  <div class="splash-ring" aria-hidden="true"></div>
+  <div class="splash-ring two" aria-hidden="true"></div>
+  <div class="splash-core">
+    <span class="mark splash-logo" data-mark data-alt="세르반 왕국의 문장"></span>
+    <p class="splash-word">SERVAN</p>
+    <p class="splash-sub">세 르 반</p>
+    <span class="splash-enter btn btn-line">
+      Entrer · 들어가기
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span>
+  </div>
+  <p class="splash-note">화면을 누르면 음악과 함께 시작합니다</p>
+</div>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<header id="nav">
+  <button class="nav-mark" data-to="home" aria-label="처음으로">
+    <span class="mark" data-mark data-alt=""></span>
+    <span>SERVAN</span>
+  </button>
+  <button class="nav-burger" id="burger" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
+  <nav class="nav-menu" id="menu" aria-label="주요 메뉴">
+    <button data-to="home">처음</button>
+    <button data-to="prince">어린 왕자</button>
+    <button data-to="world">세계관</button>
+    <button data-to="people">인물</button>
+  </nav>
+</header>
+
+<nav id="rail" aria-label="섹션 이동">
+  <button data-to="home"><span class="txt">Accueil</span><span class="dot"></span></button>
+  <button data-to="prince"><span class="txt">Le Petit Prince</span><span class="dot"></span></button>
+  <button data-to="world"><span class="txt">Servan</span><span class="dot"></span></button>
+  <button data-to="people"><span class="txt">Personnages</span><span class="dot"></span></button>
+</nav>
+
+<main>
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section id="home">
+  <div class="hero-sky" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="청록빛 저녁 하늘 아래 안개 낀 항구 도시">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#04121A"/>
+          <stop offset="0.28" stop-color="#0A2A2F"/>
+          <stop offset="0.5" stop-color="#12433F"/>
+          <stop offset="0.66" stop-color="#1E5A4F"/>
+          <stop offset="0.78" stop-color="#3C7263"/>
+          <stop offset="0.88" stop-color="#7C6A60"/>
+          <stop offset="1" stop-color="#B98D7C"/>
+        </linearGradient>
+        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <!-- 물은 하늘을 되받는다. 수평선만 옅고, 아래로 갈수록 검어진다 -->
+      <stop offset="0" stop-color="#79A395"/>
+      <stop offset="0.06" stop-color="#48786C"/>
+      <stop offset="0.26" stop-color="#1E403D"/>
+      <stop offset="1" stop-color="#04141A"/>
+        </linearGradient>
+        <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#BFF2E4" stop-opacity="0.55"/>
+          <stop offset="1" stop-color="#BFF2E4" stop-opacity="0"/>
+        </radialGradient>
+        <!-- 달빛 길. 수평선에서 가장 밝고 앞으로 오며 흩어진다 -->
+        <linearGradient id="glade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#E6FAF1" stop-opacity="0.4"/>
+          <stop offset="0.35" stop-color="#BFF2E4" stop-opacity="0.16"/>
+          <stop offset="1" stop-color="#BFF2E4" stop-opacity="0"/>
+        </linearGradient>
+        <radialGradient id="lampGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#9BF0DD" stop-opacity="0.8"/>
+          <stop offset="1" stop-color="#9BF0DD" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="blurBig" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="26"/>
+        </filter>
+        <filter id="blurSm" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6"/>
+        </filter>
+        <clipPath id="seaClip"><rect y="706" width="1440" height="194"/></clipPath>
+      </defs>
+
+      <rect width="1440" height="900" fill="url(#sky)"/>
+
+      <!-- moon -->
+      <circle cx="1178" cy="172" r="140" fill="url(#moonGlow)" opacity="0.8"/>
+      <circle cx="1178" cy="172" r="66" fill="#E6FAF1" opacity="0.88"/>
+      <circle cx="1158" cy="156" r="10" fill="#CDEDE2" opacity="0.55"/>
+      <circle cx="1194" cy="194" r="7" fill="#CDEDE2" opacity="0.45"/>
+      <circle cx="1188" cy="146" r="5" fill="#CDEDE2" opacity="0.4"/>
+
+      <!-- little planet with a rose -->
+      <g>
+        <ellipse cx="252" cy="208" rx="76" ry="30" fill="none" stroke="#9BF0DD" stroke-opacity="0.24" stroke-width="1" stroke-dasharray="4 7" transform="rotate(-16 252 208)"/>
+        <circle cx="252" cy="208" r="29" fill="#1D5450" stroke="#9BF0DD" stroke-opacity="0.4"/>
+        <ellipse cx="243" cy="200" rx="10" ry="5" fill="#0E3B39" opacity="0.8"/>
+        <g transform="translate(252,179)">
+          <path d="M0 0v-14" stroke="#4FDCC1" stroke-width="1.4" opacity="0.85"/>
+          <circle cx="0" cy="-18" r="5" fill="#7C2B38"/>
+          <circle cx="-3" cy="-20" r="3" fill="#B2626C"/>
+        </g>
+        <circle cx="252" cy="208" r="38" fill="none" stroke="#9BF0DD" stroke-opacity="0.14"/>
+      </g>
+
+      <!-- airship -->
+      <g opacity="0.85">
+        <animateTransform attributeName="transform" type="translate" values="-340 0; 1780 0" dur="82s" repeatCount="indefinite"/>
+        <g transform="translate(0,150) scale(0.72)">
+          <ellipse cx="0" cy="0" rx="62" ry="21" fill="#08222A"/>
+          <ellipse cx="-16" cy="-5" rx="30" ry="9" fill="#12403C" opacity="0.7"/>
+          <path d="M58 0l22-11v22z" fill="#08222A"/>
+          <path d="M-6 20h34l-5 12h-24z" fill="#08222A"/>
+          <circle cx="4" cy="26" r="2.4" fill="#9BF0DD" opacity="0.9"/>
+          <circle cx="16" cy="26" r="2.4" fill="#9BF0DD" opacity="0.7"/>
+          <path d="M-62 0h-14" stroke="#08222A" stroke-width="3"/>
+        </g>
+      </g>
+
+      <!-- distant ridge -->
+      <path d="M0 612 L120 566 L212 596 L318 548 L430 592 L540 552 L660 598 L790 560 L900 600 L1030 566 L1140 604 L1270 570 L1440 610 L1440 720 L0 720Z" fill="#0A2A2E" opacity="0.75"/>
+
+      <!-- mist behind city -->
+      <g filter="url(#blurBig)" opacity="0.4">
+        <ellipse cx="420" cy="666" rx="420" ry="42" fill="#CFE9E0" opacity="0.5">
+          <animateTransform attributeName="transform" type="translate" values="-60 0; 70 0; -60 0" dur="34s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="1060" cy="682" rx="380" ry="34" fill="#CFE9E0" opacity="0.4">
+          <animateTransform attributeName="transform" type="translate" values="50 0; -60 0; 50 0" dur="42s" repeatCount="indefinite"/>
+        </ellipse>
+      </g>
+
+      <!-- city -->
+      <g fill="#04161A">
+        <rect x="52" y="628" width="88" height="78"/><polygon points="46,628 96,594 146,628"/>
+        <rect x="146" y="652" width="62" height="54"/><polygon points="140,652 177,624 214,652"/>
+        <rect x="212" y="604" width="76" height="102"/><polygon points="206,604 250,570 294,604"/>
+        <rect x="296" y="534" width="48" height="172"/><polygon points="291,534 320,486 349,534"/>
+        <rect x="346" y="636" width="92" height="70"/><polygon points="340,636 392,602 444,636"/>
+        <rect x="474" y="556" width="144" height="150"/><polygon points="468,556 546,508 624,556"/>
+        <polygon points="488,556 496,462 504,556"/><polygon points="588,556 596,462 604,556"/>
+        <rect x="620" y="642" width="104" height="64"/><polygon points="614,642 672,610 730,642"/>
+        <rect x="728" y="614" width="82" height="92"/><polygon points="722,614 769,582 816,614"/>
+        <rect x="818" y="632" width="112" height="74"/><ellipse cx="874" cy="632" rx="56" ry="36"/>
+        <rect x="872" y="576" width="4" height="22"/><circle cx="874" cy="572" r="5"/>
+        <rect x="934" y="654" width="92" height="52"/>
+        <rect x="1028" y="622" width="72" height="84"/><polygon points="1022,622 1064,590 1106,622"/>
+        <rect x="1104" y="660" width="118" height="46"/>
+      </g>
+      <circle cx="320" cy="562" r="15" fill="none" stroke="#9BF0DD" stroke-opacity="0.5"/>
+      <circle cx="546" cy="596" r="17" fill="none" stroke="#9BF0DD" stroke-opacity="0.4"/>
+      <circle cx="546" cy="596" r="6" fill="#9BF0DD" opacity="0.35"/>
+
+      <!-- lighthouse -->
+      <g transform="translate(-128,0)">
+        <g fill="#04161A">
+          <polygon points="1226,708 1268,662 1330,652 1396,708"/>
+          <polygon points="1290,652 1302,516 1332,516 1344,652"/>
+          <rect x="1298" y="490" width="38" height="26"/><polygon points="1294,490 1317,466 1340,490"/>
+        </g>
+        <rect x="1296" y="558" width="42" height="13" fill="#5E2029"/>
+        <rect x="1300" y="602" width="36" height="11" fill="#5E2029"/>
+        <polygon points="1317,503 1620,392 1620,614" fill="#9BF0DD" opacity="0.12">
+          <animateTransform attributeName="transform" type="rotate" values="-22 1317 503; 16 1317 503; -22 1317 503" dur="28s" repeatCount="indefinite"/>
+        </polygon>
+        <circle cx="1317" cy="503" r="26" fill="url(#lampGlow)"/>
+        <circle cx="1317" cy="503" r="8" fill="#DFFCF3" class="lamp-glow"/>
+      </g>
+
+      <!-- lit windows -->
+      <g class="win" fill="#9BF0DD">
+        <rect x="70" y="646" width="7" height="11"/><rect x="90" y="646" width="7" height="11"/><rect x="112" y="646" width="7" height="11"/>
+        <rect x="70" y="672" width="7" height="11"/><rect x="112" y="672" width="7" height="11"/>
+        <rect x="160" y="668" width="7" height="10"/><rect x="184" y="668" width="7" height="10"/>
+        <rect x="228" y="622" width="7" height="12"/><rect x="252" y="622" width="7" height="12"/><rect x="272" y="622" width="7" height="12"/>
+        <rect x="228" y="656" width="7" height="12"/><rect x="266" y="656" width="7" height="12"/>
+        <rect x="310" y="600" width="8" height="13"/><rect x="326" y="600" width="8" height="13"/>
+        <rect x="310" y="640" width="8" height="13"/>
+        <rect x="364" y="654" width="7" height="11"/><rect x="390" y="654" width="7" height="11"/><rect x="414" y="654" width="7" height="11"/>
+        <rect x="494" y="632" width="8" height="14"/><rect x="516" y="632" width="8" height="14"/><rect x="574" y="632" width="8" height="14"/><rect x="596" y="632" width="8" height="14"/>
+        <rect x="494" y="668" width="8" height="14"/><rect x="596" y="668" width="8" height="14"/>
+        <rect x="640" y="662" width="7" height="11"/><rect x="668" y="662" width="7" height="11"/><rect x="700" y="662" width="7" height="11"/>
+        <rect x="744" y="634" width="7" height="12"/><rect x="770" y="634" width="7" height="12"/><rect x="792" y="634" width="7" height="12"/>
+        <rect x="744" y="668" width="7" height="12"/><rect x="792" y="668" width="7" height="12"/>
+        <rect x="840" y="656" width="8" height="12"/><rect x="868" y="656" width="8" height="12"/><rect x="898" y="656" width="8" height="12"/>
+        <rect x="952" y="670" width="7" height="11"/><rect x="978" y="670" width="7" height="11"/><rect x="1000" y="670" width="7" height="11"/>
+        <rect x="1044" y="640" width="7" height="12"/><rect x="1076" y="640" width="7" height="12"/>
+        <rect x="1044" y="674" width="7" height="12"/>
+        <rect x="1124" y="676" width="7" height="11"/><rect x="1152" y="676" width="7" height="11"/><rect x="1184" y="676" width="7" height="11"/>
+      </g>
+
+      <!-- water -->
+      <rect y="706" width="1440" height="194" fill="url(#water)"/>
+
+      <!-- 달이 떠 있으면 물에도 달이 있어야 한다 -->
+      <g clip-path="url(#seaClip)">
+        <path d="M1146 706h64l150 194h-364z" fill="url(#glade)" filter="url(#blurSm)"/>
+        <g fill="#E6FAF1">
+          <rect x="1150" y="714" width="56" height="2" opacity="0.34"/>
+          <rect x="1136" y="726" width="82" height="2" opacity="0.26"/>
+          <rect x="1160" y="738" width="40" height="2" opacity="0.3"/>
+          <rect x="1120" y="752" width="104" height="3" opacity="0.2"/>
+          <rect x="1168" y="768" width="46" height="2" opacity="0.22"/>
+          <rect x="1098" y="786" width="126" height="3" opacity="0.15"/>
+          <rect x="1152" y="806" width="72" height="2" opacity="0.16"/>
+          <rect x="1076" y="830" width="150" height="3" opacity="0.1"/>
+          <rect x="1130" y="858" width="96" height="2" opacity="0.09"/>
+          <animate attributeName="opacity" values="0.9;1;0.82;1;0.9" dur="9s" repeatCount="indefinite"/>
+        </g>
+      </g>
+
+      <g stroke="#9BF0DD" stroke-opacity="0.16">
+        <path d="M240 748h140"/><path d="M300 772h110"/><path d="M262 796h130"/>
+        <path d="M600 758h150"/><path d="M646 782h120"/><path d="M620 806h140"/>
+      </g>
+      <g stroke="#E6FAF1" stroke-opacity="0.1">
+        <path d="M0 730h1440"/><path d="M0 762h1440"/><path d="M0 800h1440"/><path d="M0 846h1440"/>
+      </g>
+
+      <!-- small boat -->
+      <g fill="#03151A" opacity="0.9" transform="translate(980,784)">
+        <path d="M-26 8h52l-8 10h-36z"/>
+        <path d="M0 8V-24"/>
+        <polygon points="2,-24 26,4 2,4"/>
+        <animateTransform attributeName="transform" type="translate" values="0 0; 26 5; 0 0" dur="14s" repeatCount="indefinite" additive="sum"/>
+      </g>
+
+      <!-- foreground pier -->
+      <g fill="#020F13">
+        <rect y="856" width="330" height="14"/>
+        <rect x="30" y="870" width="12" height="30"/>
+        <rect x="120" y="870" width="12" height="30"/>
+        <rect x="228" y="870" width="12" height="30"/>
+        <rect x="306" y="870" width="12" height="30"/>
+        <rect x="166" y="754" width="5" height="102"/>
+        <rect x="152" y="748" width="33" height="6"/>
+      </g>
+      <circle cx="168" cy="736" r="30" fill="url(#lampGlow)"/>
+      <circle cx="168" cy="736" r="8" fill="#DFFCF3" class="lamp-glow"/>
+      <g fill="#020F13">
+        <rect x="1188" y="800" width="5" height="72"/>
+        <rect x="1176" y="795" width="30" height="6"/>
+      </g>
+      <circle cx="1191" cy="784" r="26" fill="url(#lampGlow)"/>
+      <circle cx="1191" cy="784" r="7" fill="#DFFCF3" class="lamp-glow" style="animation-delay:1.4s"/>
+
+      <!-- foreground foliage -->
+      <g fill="#010C10" opacity="0.95">
+        <path d="M1440 900v-150c-40 18-58 52-74 86-10 22-26 42-46 64z"/>
+        <path d="M1332 900c22-30 30-62 30-96 18 26 22 62 16 96z" opacity="0.8"/>
+        <path d="M0 900v-96c26 16 42 46 52 96z" opacity="0.85"/>
+      </g>
+
+      <!-- 물 위의 안개는 세 겹. 한 겹은 두께가 보이고, 두 겹은 번져 사라진다 -->
+      <g filter="url(#blurSm)">
+        <ellipse cx="700" cy="716" rx="660" ry="20" fill="#BFE9DE" opacity="0.16"/>
+        <ellipse cx="380" cy="742" rx="420" ry="14" fill="#D8F2E9" opacity="0.1"/>
+        <ellipse cx="1080" cy="700" rx="380" ry="12" fill="#D8F2E9" opacity="0.12"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="stars" id="stars" aria-hidden="true"></div>
+  <div class="leaves" id="leaves" aria-hidden="true"></div>
+
+
+  <div class="hero-inner">
+    <span class="mark mark-hero" data-mark data-alt="세르반 왕국의 문장"></span>
+    <h1 class="hero-word" data-word="SERVAN">SERVAN</h1>
+    <p class="hero-ko">세르반</p>
+    <span class="hero-line" aria-hidden="true"></span>
+    <p class="hero-tag">
+      <b>낡았지만 죽지 않은 나라.</b><br />
+      영영 미래를 기다리는 항구와 정원,<br />
+      그리고 각자의 작은 별을 품은 사람들.
+    </p>
+    <p class="hero-coord" aria-hidden="true">
+      <span>41°N 07°W</span><s></s><span>Institut Royal de Géographie</span><s></s><span>Éd. IV</span>
+    </p>
+    <div class="hero-acts">
+      <button class="btn btn-fill" data-to="prince">
+        이야기를 열다
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <button class="btn btn-line" data-to="world">지도를 펼치다</button>
+    </div>
+  </div>
+
+  <div class="hero-cue" aria-hidden="true">
+    <span class="bar"></span>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     LE PETIT PRINCE
+     ============================================================ -->
+<section id="prince" class="band">
+  <div class="wrap">
+    <div class="head-block rv">
+      <p class="plate-no"><span>Planche</span><i>I</i><s></s></p>
+      <p class="label">Le Petit Prince · Antoine de Saint-Exupéry, 1943</p>
+      <h2 class="title">
+        <span class="ghost" aria-hidden="true" style="top:-0.42em; left:-0.06em">Prince</span>
+        어린 왕자를<br />아직 모르는 당신에게
+        <span class="en">Trois paragraphes suffisent</span>
+      </h2>
+      <p class="lede">
+        세르반은 한 권의 오래된 책 위에 세워졌습니다.
+        읽지 않았어도 괜찮습니다 — 세 문단이면 충분하니까요.
+      </p>
+    </div>
+
+    <div class="prince-grid">
+      <div class="steps rv">
+        <article class="step">
+          <span class="num">i</span>
+          <div>
+            <h3>사막에서의 만남</h3>
+            <p>사하라에 불시착한 비행사가 어느 아침 작은 왕자를 만납니다. 왕자는 아주 작은 별에서 왔고, 그곳에는 그가 매일 물을 주던 한 송이 장미가 있었습니다.</p>
+          </div>
+        </article>
+        <article class="step">
+          <span class="num">ii</span>
+          <div>
+            <h3>별들을 지나며</h3>
+            <p>왕자는 여러 별에서 사람들을 만납니다. 명령하기를 좋아하는 왕, 박수를 기다리는 사람, 잔을 놓지 못하는 사람, 숫자를 세는 사업가, 매 분 등을 켜는 사람, 책상을 떠나지 않는 지리학자.</p>
+          </div>
+        </article>
+        <article class="step">
+          <span class="num">iii</span>
+          <div>
+            <h3>남는 한 문장</h3>
+            <p>지구에서 만난 여우가 「길들인다」는 말의 뜻을 알려 줍니다. 그리고 이야기가 끝난 뒤에도 한 문장이 남습니다 — 가장 중요한 것은 눈에 보이지 않는다는 말.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="drawing plate rv" id="drawing" role="button" tabindex="0" aria-label="그림을 눌러 다르게 보기">
+        <svg viewBox="0 0 400 250" role="img" aria-label="모자처럼 보이는, 실은 코끼리를 삼킨 보아뱀 그림">
+          <g fill="none" stroke="#2A2420" stroke-width="2.4" stroke-linecap="round">
+            <path d="M32 196c26-2 44-14 70-38 34-32 92-40 138-18 32 16 54 40 86 50 16 5 28 6 42 6"/>
+            <path d="M32 196h336"/>
+          </g>
+          <g id="boa" stroke="#7C2B38" stroke-width="1.8" fill="none" stroke-dasharray="5 5" stroke-linecap="round">
+            <ellipse cx="176" cy="158" rx="52" ry="26"/>
+            <circle cx="128" cy="146" r="17"/>
+            <path d="M114 152c-14 6-22 18-20 32"/>
+            <path d="M138 132c-6-10-2-20 8-24"/>
+            <path d="M150 172v22M172 176v18M198 174v20M218 170v24"/>
+            <path d="M226 150c10-4 18-2 22 6"/>
+          </g>
+        </svg>
+        <p class="caption" id="drawCap">어른들은 이것을 <b>모자</b>라고 말했습니다.<br /><span class="hint">눌러 보세요</span></p>
+      </div>
+    </div>
+
+    <blockquote class="pull rv">
+      <p>「가장 중요한 것은 눈에 보이지 않는다.」</p>
+      <span class="src">Le Petit Prince, XXI</span>
+    </blockquote>
+
+    <div class="wrap-narrow rv" style="margin-top:2.8rem;text-align:center">
+      <p class="lede" style="margin-inline:auto">
+        세르반의 사람들은 그 여행의 메아리처럼 살아갑니다.
+        원작을 알면 조금 더 깊게 읽히고, 몰라도 충분히 걸을 수 있는 세계입니다.
+      </p>
+      <div style="margin-top:2rem">
+        <button class="btn btn-line-dark" data-to="world">세르반으로 떠나기</button>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================================================
+     WORLD
+     ============================================================ -->
+<section id="world" class="band tinted">
+  <div class="wrap">
+    <div class="world-head">
+      <div class="head-block rv">
+        <p class="plate-no"><span>Planche</span><i>II</i><s></s></p>
+        <p class="label">Le Royaume de Servan</p>
+        <h2 class="title">
+          <span class="ghost" aria-hidden="true" style="top:-0.36em; left:-0.06em">Servan</span>
+          세르반 왕국
+          <span class="en">Un royaume qui attend l’avenir</span>
+        </h2>
+        <p class="lede">
+          오래된 왕조와 귀족 문화가 남은 서쪽의 왕국.
+          한때 항해와 천문학, 지도 제작으로 번영했으나 지금은 새로운 산업과 전통 사이에서 천천히 흔들리는 시대를 지나고 있습니다.
+        </p>
+        <p class="lede" style="margin-top:1rem">
+          화려한 사교계와 낡은 시골 마을, 촛불이 켜진 저택과 갓 태어난 기계가 같은 하늘 아래 놓여 있습니다.
+          국민들은 스스로 이 나라를 이렇게 부릅니다 — <b>낡았지만 죽지 않은 나라</b>, 그리고 <b>영영 미래를 기다리는 나라</b>.
+        </p>
+      </div>
+
+      <!-- 요람(要覽) — 지도책 앞장에 붙는 개요표. 여백을 장식이 아니라 자료로 채운다. -->
+      <aside class="fiche plate rv" aria-label="세르반 개요">
+        <span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span>
+        <p class="fiche-hd">Notice sommaire<em>요람</em></p>
+        <dl>
+          <div><dt>위치</dt><dd>서방 · 41°N 07°W</dd></div>
+          <div><dt>수도</dt><dd>에델라 <span>Etherla</span></dd></div>
+          <div><dt>등재 지역</dt><dd>4</dd></div>
+          <div><dt>옛 산업</dt><dd>항해 · 천문 · 지도</dd></div>
+          <div><dt>새 산업</dt><dd>증기 · 비행선 · 전자기</dd></div>
+          <div><dt>하늘빛</dt><dd>청록 <span>turquoise</span></dd></div>
+          <div><dt>기록된 인물</dt><dd>10</dd></div>
+        </dl>
+        <p class="fiche-ft">Institut Royal de Géographie</p>
+      </aside>
+    </div>
+
+    <div class="creed">
+      <article class="rv">
+        <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <circle cx="20" cy="21" r="11"/>
+          <ellipse cx="20" cy="21" rx="18" ry="6" transform="rotate(-18 20 21)"/>
+          <path d="M20 10V4M20 4l-3 3M20 4l3 3"/>
+        </svg>
+        <h3>작은 별</h3>
+        <p>모든 사람은 자신만의 작은 별 — 하나의 작은 세계를 가지고 태어난다고 믿습니다.</p>
+      </article>
+      <article class="rv">
+        <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M8 32c4-6 8-9 12-9s8 3 12 9"/>
+          <circle cx="20" cy="13" r="6"/>
+          <path d="M4 20h4M32 20h4"/>
+        </svg>
+        <h3>여행자에 대한 예우</h3>
+        <p>타인의 세계를 이해하는 일이 삶에서 가장 중요한 여행이라 여기기에, 여행자와 기록자와 탐험가는 특별한 존경을 받습니다.</p>
+      </article>
+      <article class="rv">
+        <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <rect x="7" y="10" width="26" height="20" rx="2"/>
+          <path d="M7 12l13 10 13-10"/>
+        </svg>
+        <h3>남겨지는 것들</h3>
+        <p>편지와 여행 기록, 지도와 정원. 사람의 마음과 기억을 남기는 네 가지 방식입니다.</p>
+      </article>
+    </div>
+
+    <div class="rule rv" style="margin-top:4rem">Carte générale · 지역을 눌러 보세요</div>
+
+  <div class="map-shell plate rv">
+    <span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span>
+    <div class="frame">
+        <svg id="map" viewBox="0 0 1000 700" role="img" aria-label="세르반 왕국의 지도. 벨루아 평원, 마레인, 에델라 시, 로지에 저택을 누를 수 있습니다.">
+          <defs>
+            <linearGradient id="parch" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#F6F2EA"/>
+              <stop offset="1" stop-color="#E4DBCD"/>
+            </linearGradient>
+            <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#CFE9E1"/>
+              <stop offset="1" stop-color="#B9DFD5"/>
+            </linearGradient>
+            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+              <path d="M50 0H0V50" fill="none" stroke="#8A7F70" stroke-width="0.4" opacity="0.28"/>
+            </pattern>
+            <!-- 바다의 잔물결. 해안 가까이에만 얹는다 -->
+            <pattern id="swell" width="26" height="14" patternUnits="userSpaceOnUse">
+              <path d="M0 8c4-5 9-5 13 0s9 5 13 0" fill="none" stroke="#0F7566" stroke-width="0.6" opacity="0.3"/>
+            </pattern>
+            <!--
+              해안선은 단 한 번만 정의합니다. 지역은 이 모양으로 잘라 씁니다(clip).
+              북동쪽에 곶이 있고, 동쪽에서 만(灣)이 파고들어 옵니다 —
+              에델라가 「안개 낀 항구 도시」인 이유가 지도에 있어야 하니까요.
+            -->
+            <path id="coast" d="M196 258C202 224 220 196 244 176L268 200C292 168 316 130 344 104C360 86 382 82 396 96C406 108 404 122 410 132C446 108 490 96 534 100C562 102 590 108 614 118L630 94C666 102 706 120 738 142C746 120 766 114 782 126C802 140 814 162 822 186C838 212 850 236 846 262L822 262C774 280 710 290 662 294C636 298 618 304 618 316C618 330 636 336 660 340C710 344 774 350 814 362C840 384 852 414 848 444C844 480 818 506 790 526C758 546 716 566 674 578C642 588 618 596 596 600C562 606 522 598 488 592L468 608C442 600 418 592 396 588L370 604C338 594 298 586 260 570C216 558 182 528 168 496L138 470C144 448 150 436 156 424C146 398 146 372 154 348L126 316C150 300 172 286 184 272C188 266 193 262 196 258Z"/>
+            <clipPath id="landClip"><use href="#coast"/></clipPath>
+          </defs>
+
+          <rect width="1000" height="700" fill="url(#seaG)"/>
+          <rect width="1000" height="700" fill="url(#grid)"/>
+          <rect x="12" y="12" width="976" height="676" fill="none" stroke="#7C2B38" stroke-width="1" opacity="0.35"/>
+          <rect x="20" y="20" width="960" height="660" fill="none" stroke="#7C2B38" stroke-width="0.5" opacity="0.25"/>
+
+          <!-- 해안 반향선 — 옛 해도가 물의 깊이를 나타내던 방식 -->
+          <g fill="none" stroke="#0F7566" class="map-deco">
+            <use href="#coast" opacity="0.22" stroke-width="1" transform="translate(500 350) scale(1.032) translate(-500 -350)"/>
+            <use href="#coast" opacity="0.13" stroke-width="1" transform="translate(500 350) scale(1.07) translate(-500 -350)"/>
+            <use href="#coast" opacity="0.07" stroke-width="1" transform="translate(500 350) scale(1.115) translate(-500 -350)"/>
+          </g>
+
+          <!-- 육지 -->
+          <use href="#coast" class="map-deco" fill="url(#parch)"/>
+
+          <!-- 지역 — 큼직한 면을 해안선으로 잘라낸다. 경계선은 한 번만 적는다. -->
+          <g clip-path="url(#landClip)">
+            <g class="zone" id="z-beluar" data-zone="beluar" role="button" tabindex="0" aria-label="벨루아 평원">
+              <path class="zone-fill" d="M40 20H960V300L618 316C576 330 534 344 480 346C340 350 200 316 100 290L40 280Z"/>
+            </g>
+            <g class="zone" id="z-marein" data-zone="marein" role="button" tabindex="0" aria-label="마레인">
+              <path class="zone-fill" d="M40 280L100 290C200 316 340 350 480 346C466 400 446 460 436 520C430 560 426 596 424 630L40 680Z"/>
+            </g>
+            <g class="zone" id="z-etherla" data-zone="etherla" role="button" tabindex="0" aria-label="에델라 시">
+              <path class="zone-fill" d="M480 346C534 344 576 330 618 316L960 300V680L424 630C426 596 430 560 436 520C446 460 466 400 480 346Z"/>
+            </g>
+          </g>
+
+          <!-- 해안선 본선 -->
+          <use href="#coast" class="map-deco" fill="none" stroke="#46111C" stroke-width="1.8" opacity="0.82"/>
+
+          <!-- 딸린 섬 두 개. 육지와 같은 종이색이어야 섬으로 읽힌다. -->
+          <g class="map-deco" opacity="0.85">
+            <path d="M902 548c14-10 34-6 38 8 4 12-10 20-26 18-14-2-22-16-12-26z" fill="url(#parch)" stroke="#46111C" stroke-width="1.2" opacity="0.9"/>
+            <path d="M78 498c10-8 26-4 28 6 2 10-10 16-20 13-9-3-14-13-8-19z" fill="url(#parch)" stroke="#46111C" stroke-width="1.2" opacity="0.9"/>
+          </g>
+
+          <!-- 방랑의 길. 어디서도 끝나지 않으므로 화살표도 없다. -->
+          <path class="map-deco" d="M240 500C290 424 350 372 420 322C486 274 548 214 620 196C676 184 716 208 720 250" fill="none" stroke="#79202F" stroke-width="1.6" stroke-dasharray="6 8" opacity="0.5"/>
+
+          <!-- 벨루아: 키 큰 풀 -->
+          <g class="map-deco" stroke="#17836F" fill="none" opacity="0.5" stroke-width="1.2" stroke-linecap="round">
+            <path d="M300 262c0-9 2-14 5-19M308 262c1-9 4-15 8-20M316 262c2-9 6-13 11-17"/>
+            <path d="M520 252c0-9 2-14 5-19M528 252c1-9 4-15 8-20M536 252c2-9 6-13 11-17"/>
+            <path d="M596 176c0-9 2-14 5-19M604 176c1-9 4-15 8-20M612 176c2-9 6-13 11-17"/>
+            <path d="M726 238c0-9 2-14 5-19M734 238c1-9 4-15 8-20M742 238c2-9 6-13 11-17"/>
+            <path d="M470 148c0-9 2-14 5-19M478 148c1-9 4-15 8-20"/>
+            <path d="M660 262c0-9 2-14 5-19M668 262c1-9 4-15 8-20"/>
+          </g>
+
+          <!-- 마레인: 기어와 공장 굴뚝 -->
+          <g class="map-deco" stroke="#4E1620" fill="none" opacity="0.5" stroke-width="1.2">
+            <circle cx="238" cy="330" r="15"/><circle cx="238" cy="330" r="5"/>
+            <path d="M238 315v-6M238 351v6M223 330h-6M259 330h6M228 320l-4-4M248 340l4 4M248 320l4-4M228 340l-4 4"/>
+            <rect x="196" y="486" width="52" height="34"/>
+            <path d="M204 486v-42h8v42M222 486v-56h8v56"/>
+            <path d="M208 438c7-9-5-13 2-20M226 424c7-9-5-13 2-20"/>
+            <path d="M204 500h10M228 500h10"/>
+            <rect x="286" y="466" width="34" height="26"/>
+            <path d="M296 466v-34h7v34"/>
+            <path d="M299 426c6-8-4-12 2-18"/>
+          </g>
+
+          <!-- 에델라: 첨탑과 돔 -->
+          <g class="map-deco" fill="#4E1620" opacity="0.5">
+            <polygon points="538,512 542,474 546,512"/>
+            <polygon points="554,512 559,462 564,512"/>
+            <polygon points="572,512 576,480 580,512"/>
+            <rect x="534" y="512" width="50" height="10"/>
+            <path d="M600 502a15 15 0 0 1 30 0z"/>
+            <rect x="602" y="502" width="26" height="20"/>
+            <rect x="613" y="482" width="3" height="12"/>
+          </g>
+
+          <!-- 만 안쪽에 항구 부호. 에델라가 항구 도시라는 표시 -->
+          <g class="map-deco" fill="none" stroke="#0F7566" stroke-width="1.1" opacity="0.55">
+            <path d="M690 322h44M712 316v14M700 330c4 5 20 5 24 0"/>
+          </g>
+
+          <!-- Etherla capital pin -->
+          <g class="pin" id="p-etherla" data-zone="etherla" role="button" tabindex="0" aria-label="에델라 시">
+            <circle class="halo" cx="742" cy="394" r="18"/>
+            <polygon points="742,380 746,391 758,391 748,398 752,410 742,402 732,410 736,398 726,391 738,391" fill="#79202F"/>
+          </g>
+          <text class="zone-name" x="742" y="440" text-anchor="middle">에델라 시</text>
+          <text class="zone-fr" x="742" y="458" text-anchor="middle">La capitale Etherla</text>
+
+          <!-- Beluar label -->
+          <text class="zone-name" x="612" y="158" text-anchor="middle">벨루아 평원</text>
+          <text class="zone-fr" x="612" y="176" text-anchor="middle">Prairie de Beluar</text>
+
+          <!-- Marein label -->
+          <text class="zone-name" x="262" y="404" text-anchor="middle">마레인</text>
+          <text class="zone-fr" x="262" y="422" text-anchor="middle">Ville de Marein</text>
+
+          <!-- Rosier pin -->
+          <g class="pin" id="p-rosier" data-zone="rosier" role="button" tabindex="0" aria-label="로지에 저택">
+            <circle class="halo" cx="398" cy="204" r="20"/>
+            <g fill="#4E1620">
+              <rect x="386" y="200" width="24" height="16"/>
+              <polygon points="382,200 398,188 414,200"/>
+              <rect x="395" y="207" width="6" height="9" fill="#E4DBCD"/>
+            </g>
+            <g stroke="#7C2B38" fill="none" stroke-width="1.2">
+              <path d="M414 216c8-2 12-8 11-16"/>
+              <circle cx="426" cy="198" r="3.5" fill="#7C2B38" stroke="none"/>
+            </g>
+          </g>
+          <text class="zone-name" x="398" y="246" text-anchor="middle" font-size="13">로지에 저택</text>
+          <text class="zone-fr" x="398" y="262" text-anchor="middle" font-size="10">Maison Rosier</text>
+
+          <!-- wanderer cartouche -->
+          <g class="pin" id="p-wander" data-zone="wander" role="button" tabindex="0" aria-label="방랑의 길">
+            <rect class="halo" x="36" y="600" width="228" height="74" rx="4" fill="rgba(124,43,56,0.1)"/>
+            <rect x="36" y="600" width="228" height="74" rx="4" fill="none" stroke="#7C2B38" stroke-width="1" stroke-dasharray="5 5"/>
+            <text class="zone-name" x="150" y="630" text-anchor="middle" font-size="14">방랑의 길</text>
+            <text class="zone-fr" x="150" y="648" text-anchor="middle" font-size="10">Sans demeure · 지도 밖의 사람</text>
+            <g stroke="#4E1620" fill="none" stroke-width="1.2" transform="translate(60,632)">
+              <circle cx="0" cy="0" r="3.5"/>
+              <path d="M0 4v8M0 7l-4 6M0 7l4 6M-4 5h8"/>
+            </g>
+          </g>
+
+          <!-- airship over the sea -->
+          <g class="map-deco" opacity="0.5">
+            <g transform="translate(112,206)">
+              <ellipse cx="0" cy="0" rx="30" ry="11" fill="none" stroke="#4E1620" stroke-width="1.2"/>
+              <path d="M28 0l11-6v12z" fill="#4E1620"/>
+              <path d="M-6 11h14l-2 7h-10z" fill="#4E1620"/>
+              <path d="M0-11v22" stroke="#4E1620" stroke-width="0.8"/>
+              <animateTransform attributeName="transform" type="translate" values="0 0; 26 -8; 0 0" dur="16s" repeatCount="indefinite" additive="sum"/>
+            </g>
+          </g>
+
+          <!-- ship -->
+          <g class="map-deco" opacity="0.55" transform="translate(556,644)">
+            <path d="M-24 6h48l-7 10h-34z" fill="#4E1620"/>
+            <path d="M0 6v-26" stroke="#4E1620" stroke-width="1.4"/>
+            <polygon points="2,-20 22,3 2,3" fill="#4E1620" opacity="0.75"/>
+            <path d="M-30 22c8-4 14-4 22 0s14 4 22 0s14-4 22 0" fill="none" stroke="#17836F" stroke-width="1" opacity="0.7"/>
+          </g>
+
+          <!-- compass rose -->
+          <g class="map-deco" transform="translate(908,138)">
+            <circle r="46" fill="rgba(246,242,234,0.75)" stroke="#7C2B38" stroke-width="1"/>
+            <circle r="34" fill="none" stroke="#7C2B38" stroke-width="0.5" opacity="0.6"/>
+            <g fill="#4E1620">
+              <polygon points="0,-34 6,0 0,10 -6,0"/>
+              <polygon points="0,34 6,0 0,-10 -6,0" opacity="0.45"/>
+              <polygon points="-34,0 0,6 10,0 0,-6" opacity="0.3"/>
+              <polygon points="34,0 0,6 -10,0 0,-6" opacity="0.3"/>
+            </g>
+            <polygon points="0,-34 -6,0 0,4" fill="#17836F"/>
+            <text y="-50" text-anchor="middle" font-family="Bodoni Moda, Georgia, serif" font-size="13" fill="#4E1620">N</text>
+            <text y="60" text-anchor="middle" font-family="Bodoni Moda, Georgia, serif" font-size="11" fill="#4E1620" opacity="0.7">S</text>
+            <text x="56" y="4" text-anchor="middle" font-family="Bodoni Moda, Georgia, serif" font-size="11" fill="#4E1620" opacity="0.7">E</text>
+            <text x="-56" y="4" text-anchor="middle" font-family="Bodoni Moda, Georgia, serif" font-size="11" fill="#4E1620" opacity="0.7">O</text>
+          </g>
+
+          <!-- title cartouche -->
+          <g class="map-deco" transform="translate(48,44)">
+            <rect width="252" height="86" fill="rgba(246,242,234,0.8)" stroke="#7C2B38" stroke-width="1"/>
+            <rect x="6" y="6" width="240" height="74" fill="none" stroke="#7C2B38" stroke-width="0.5" opacity="0.5"/>
+            <text x="126" y="38" text-anchor="middle" font-family="Bodoni Moda, Georgia, serif" font-size="19" letter-spacing="3" fill="#4E1620">ROYAUME DE SERVAN</text>
+            <text x="126" y="60" text-anchor="middle" font-family="Gowun Batang, serif" font-size="12" fill="#6B645C">세르반 왕국 전도</text>
+            <path d="M96 70h60" stroke="#17836F" stroke-width="1"/>
+          </g>
+
+          <!-- scale bar -->
+          <g class="map-deco" transform="translate(742,646)" fill="#4E1620">
+            <rect width="30" height="7"/><rect x="30" width="30" height="7" fill="none" stroke="#4E1620" stroke-width="1"/>
+            <rect x="60" width="30" height="7"/><rect x="90" width="30" height="7" fill="none" stroke="#4E1620" stroke-width="1"/>
+            <text x="60" y="24" text-anchor="middle" font-family="Bodoni Moda, Georgia, serif" font-size="11">40 lieues</text>
+          </g>
+        </svg>
+      </div>
+      <p class="map-caption">
+        <span>Planche II · Le Royaume de Servan</span>
+        <em>Gravé par F. Astor</em>
+        <span>Échelle 40 lieues · Cuivre</span>
+      </p>
+      <p class="map-hint">접힌 도판입니다 — 옆으로 밀어 펼치세요</p>
+    </div>
+
+    <div id="region" aria-live="polite"></div>
+
+    <div class="atmos rv" aria-hidden="true">
+      <div class="atmos-track" id="atmos"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PEOPLE
+     ============================================================ -->
+<section id="people" class="band">
+  <div class="wrap">
+    <div class="head-block rv">
+      <p class="plate-no"><span>Planche</span><i>III</i><s></s></p>
+      <p class="label">Les Personnages</p>
+      <h2 class="title">
+        <span class="ghost" aria-hidden="true" style="top:-0.36em; left:-0.06em">Portraits</span>
+        세르반의 사람들
+        <span class="en">Ce que l’on raconte d’elles</span>
+      </h2>
+      <p class="lede">
+        여기 적힌 것은 스쳐 지나간 사람들이 남긴 인상과 소문뿐입니다.
+        그녀들을 잘 아는 척하지는 않겠습니다 — 남은 이야기는 직접 마주할 몫이니까요.
+      </p>
+      <p class="people-note">
+        기록자 주(註) — 이름과 직업, 눈에 보이는 것과 들려온 말만 옮겨 적었습니다.
+        어느 항목도 완전하지 않으며, 아마 몇 줄은 틀렸을 것입니다.
+      </p>
+    </div>
+
+    <div class="filters rv" id="filters" role="group" aria-label="거주지로 보기"></div>
+    <div class="people-grid" id="people-grid"></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="mark mark-foot" data-mark data-alt="세르반 왕국의 문장"></span>
+    <p class="word">SERVAN</p>
+    <p class="fr">« Un royaume vieilli, mais qui n’est pas mort. »</p>
+    <div class="colophon">
+      <span>Recueil de planches<b>도판 4엽</b></span>
+      <span>Institut Royal de Géographie<b>왕립지리원 편</b></span>
+      <span>Gravé sur cuivre · Papier vergé<b>동판 · 종이</b></span>
+      <span>Musique<b>기쿠하시 — 물고기</b></span>
+    </div>
+    <p class="fine">Le Petit Prince © Antoine de Saint-Exupéry, 1943 · Fan worldbuilding archive</p>
+  </div>
+</footer>
+
+<!-- ============================================================
+     CHARACTER SHEET
+     ============================================================ -->
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="sheetName">
+  <div class="sheet" id="sheet">
+    <button class="sheet-close" id="sheetClose" aria-label="닫기">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="figure" id="sheetFig"></div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MUSIC PLAYER
+     ============================================================ -->
+<div id="player">
+  <div class="panel" id="panel" role="region" aria-label="음악 플레이어">
+    <div class="tune">
+      <div class="disc" id="disc" aria-hidden="true"></div>
+      <div>
+        <p class="kind">Main Theme</p>
+        <h4>물고기</h4>
+        <p>기쿠하시 · キクハシ</p>
+      </div>
+    </div>
+    <div class="deck">
+      <button class="play" id="play" aria-label="재생">
+        <svg id="icoPlay" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2l10 6-10 6z"/></svg>
+        <svg id="icoPause" viewBox="0 0 16 16" fill="currentColor" style="display:none" aria-hidden="true"><rect x="3.5" y="2" width="3.4" height="12"/><rect x="9.1" y="2" width="3.4" height="12"/></svg>
+      </button>
+      <div class="seek" id="seek" role="slider" tabindex="0" aria-label="재생 위치" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="track"><div class="fill" id="fill"></div></div>
+      </div>
+      <span class="clock" id="clock">0:00 / 0:00</span>
+    </div>
+    <div class="vol">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM17 9a4 4 0 010 6"/></svg>
+      <input type="range" id="vol" min="0" max="100" value="70" aria-label="음량" />
+    </div>
+    <button class="ly-btn" id="lyBtn" aria-expanded="false">가사 읽기 · Paroles</button>
+    <div id="lyrics">
+<!-- ▼▼▼ 가사를 이 아래 줄에 붙여넣으세요. (이 주석은 지우지 않아도 됩니다) ▼▼▼ -->
+<span class="ph">가사는 아직 비어 있습니다.</span>
+<!-- ▲▲▲ 가사 끝 ▲▲▲ -->
+    </div>
+    <p class="audio-warn" id="warn">
+      음원을 찾지 못했습니다. <code>물고기.mp3</code>가 <code>index.html</code>과 같은 폴더에 있어야 합니다.
+      그래도 안 되면 파일 이름을 <code>bgm.mp3</code>로 바꿔 보세요 — 그 이름도 자동으로 찾습니다.
+    </p>
+  </div>
+  <button class="fab" id="fab" aria-label="음악 플레이어 열기" aria-expanded="false">
+    <span class="ripple" aria-hidden="true"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.2"/>
+      <circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/>
+      <g class="needle"><path d="M12 3.2v3.4M12 17.4v3.4M3.2 12h3.4M17.4 12h3.4" opacity="0.55"/></g>
+    </svg>
+  </button>
+</div>
+
+<audio id="bgm" loop preload="metadata"></audio>
+<script>
+/* ============================================================
+   SERVAN — single file site
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var UID = 0;
+
+  /* ----------------------------------------------------------
+     EMBLEMS (직업 기반 장식 마크 · viewBox 0 0 48 48)
+     ---------------------------------------------------------- */
+  var EM = {
+    sketchbook: `<path d="M11 11h13a4 4 0 0 1 4 4v22H15a4 4 0 0 1-4-4z"/><path d="M16 19h9M16 25h7"/><path d="M31 31l8-8 4 4-8 8-5 1z"/>`,
+    airship:    `<ellipse cx="24" cy="19" rx="15" ry="8"/><path d="M19 27h10l-2 6h-6z"/><path d="M39 19h5M9 19H4"/><path d="M24 11v16"/>`,
+    garden:     `<path d="M14 22h14v12a4 4 0 0 1-4 4h-6a4 4 0 0 1-4-4z"/><path d="M28 26l8-4v9z"/><path d="M18 22v-3a4 4 0 0 1 8 0v3"/><path d="M34 38c0-6 3-9 9-10-1 7-4 10-9 10z"/>`,
+    mortar:     `<path d="M12 23h24a12 12 0 0 1-12 12 12 12 0 0 1-12-12z"/><path d="M24 35v7M17 42h14"/><path d="M29 21l10-10 3 3-10 10z"/>`,
+    palette:    `<path d="M24 10a14 14 0 1 0 0 28c2 0 3-1 3-3s-2-3 0-5 5 0 6-2a13 13 0 0 0-9-18z"/><circle cx="18" cy="19" r="1.8"/><circle cx="26" cy="17" r="1.8"/><circle cx="16" cy="27" r="1.8"/>`,
+    mask:       `<path d="M12 14h24v8a12 12 0 0 1-24 0z"/><circle cx="19" cy="22" r="1.8"/><circle cx="29" cy="22" r="1.8"/><path d="M18 30c4 3 8 3 12 0"/><path d="M24 38v5"/>`,
+    note:       `<path d="M22 33a5 5 0 1 1-10 0 5 5 0 0 1 10 0z"/><path d="M22 33V12l15-4v6l-15 4"/>`,
+    ledger:     `<path d="M11 11h17l8 8v20H11z"/><path d="M28 11v8h8"/><circle cx="24" cy="29" r="5"/><path d="M24 26v6M22 29h4"/>`,
+    lamp:       `<path d="M24 20v20M18 40h12"/><path d="M17 20h14l-3-7H20z"/><circle cx="24" cy="10" r="3.5"/><path d="M24 3v3M31 7l-2 2M17 7l2 2"/>`,
+    dividers:   `<circle cx="24" cy="10" r="3.2"/><path d="M24 13.2c0 2.2-1.6 2.8-1.6 4.8L13 39"/><path d="M24 13.2c0 2.2 1.6 2.8 1.6 4.8L35 39"/><path d="M17.5 31a13 13 0 0 1 13 0"/>`
+  };
+
+  /* ----------------------------------------------------------
+     CHARACTERS — 제3자의 인상과 소문만 기록
+     ---------------------------------------------------------- */
+  var PEOPLE = [
+    {
+      id: "ailen", name: "아일렌 모르시에", en: "Ailen Morsier",
+      age: 20, height: "166cm", job: "방랑자 · 삽화가",
+      homeId: "wander", home: "방랑의 길",
+      tone: ["#8A6F45", "#D8BC85"], em: EM.sketchbook,
+      alt: "아일렌 모르시에 — 밀빛 단발과 낡은 여행 코트, 가죽 가방을 든 젊은 삽화가",
+      tag: "며칠 머물다 사라지는, 스케치북을 든 여행자.",
+      look: "옅은 호박색 눈과 밀빛 단발. 낡은 여행 코트에 가죽 가방 하나. 가느다란 체형에 걸음이 유난히 가볍습니다.",
+      voice: "부드러운 존댓말. 맑고 평이한 말투로, 감정을 늘 작은 사물이나 풍경에 빗대어 이야기합니다.",
+      rumor: [
+        "어느 마을에서든 며칠쯤 묵었다가, 인사도 없이 다음 길로 떠난다고 합니다.",
+        "당연한 것을 새삼 다시 묻는 버릇이 있어, 대답하려다 말문이 막히는 사람이 적지 않다고 합니다."
+      ],
+      quote: "Est-ce la fleur qui se fane et nous rend tristes… ou bien notre tristesse qui ne nous laisse voir que les fleurs fanées ?"
+    },
+    {
+      id: "theona", name: "테오나 카르베트", en: "Theona Carvet",
+      age: 32, height: "174cm", job: "비행선 조종사 · 탐사대장",
+      homeId: "rosier", home: "로지에 저택",
+      tone: ["#26333D", "#6E8393"], em: EM.airship,
+      alt: "테오나 카르베트 — 검갈색 숏컷에 항공 재킷과 가죽 장갑을 낀 비행선 조종사",
+      tag: "비행선을 부리는 탐사대장. 말보다 먼저 움직입니다.",
+      look: "회청색 눈과 검갈색 숏컷. 항공 재킷과 가죽 장갑, 단단한 체형. 손등과 팔에 잔흉터가 남아 있습니다.",
+      voice: "건조한 반말. 문장이 짧고 명확하며, 걱정할수록 목소리가 낮아지고 질문이 구체적으로 바뀝니다.",
+      rumor: [
+        "위험한 자리에서 가장 먼저 앞으로 나서는 사람으로 알려져 있습니다.",
+        "위로를 바라고 찾아가면 대신 해결책을 받아 오게 된다는 말이 있습니다."
+      ],
+      quote: "Garde ton « ça va ». Dis-moi où tu as mal. Et si tu peux marcher."
+    },
+    {
+      id: "miela", name: "미엘라 도르셋", en: "Miela Dorset",
+      age: 25, height: "168cm", job: "저택 관리인 · 정원사",
+      homeId: "rosier", home: "로지에 저택",
+      tone: ["#7A2E22", "#D2705A"], em: EM.garden,
+      alt: "미엘라 도르셋 — 붉은 장발과 주근깨, 긴 조끼와 정원 장갑을 낀 저택 관리인",
+      tag: "로지에의 정원과 온실을 돌보는 관리인.",
+      look: "청록색 눈과 붉은 장발, 주근깨. 셔츠 위에 긴 조끼를 걸치고, 흙이 묻은 정원 장갑을 낍니다.",
+      voice: "처음에는 거리를 두는 존댓말. 가까워지면 자연스럽게 반말이 됩니다. 사람을 안심시키는 어조입니다.",
+      rumor: [
+        "손님이 오는 시간, 좋아하는 차, 사소한 습관까지 잘 기억한다고 합니다.",
+        "질문을 던질 때 이미 답을 알고 있는 듯한 눈빛이 스친다는 이야기도 있습니다."
+      ],
+      quote: "J’ai retenu l’heure à laquelle vous venez. Alors prétendre que je ne vous attendais pas… ce serait un mensonge un peu vexant."
+    },
+    {
+      id: "savel", name: "사벨 에르키안", en: "Savel Erquian",
+      age: 34, height: "175cm", job: "의사 · 약제사",
+      homeId: "etherla", home: "에델라 시",
+      tone: ["#16261E", "#4C6B57"], em: EM.mortar,
+      alt: "사벨 에르키안 — 잿빛 흑발 중단발에 검은 셔츠와 약제사 가운을 입은 의사",
+      tag: "에델라의 의사이자 약제사. 목소리가 낮고 손이 빠릅니다.",
+      look: "짙은 녹색 눈과 잿빛이 도는 흑발 중단발. 창백한 피부 위로 검은 셔츠와 약제사 가운이 단정합니다.",
+      voice: "정중하고 어딘가 나른한 존댓말. 어떤 말이든 친절한 권유처럼 들립니다.",
+      rumor: [
+        "늦은 밤에 찾아온 환자도 돌려보내지 않는다는 평이 있습니다.",
+        "상대에게 지금 무엇이 필요한지 지나칠 만큼 빠르게 알아본다고 합니다."
+      ],
+      quote: "Je ne dis pas que votre consentement est sans importance. Seulement, celui d’un mort ne sert plus à rien."
+    },
+    {
+      id: "isera", name: "이세라 벨루아", en: "Isera Beluar",
+      age: 28, height: "165cm", job: "화가 · 귀족 가문 후계자",
+      homeId: "rosier", home: "로지에 저택",
+      tone: ["#232A5C", "#6E5CA0"], em: EM.palette,
+      alt: "이세라 벨루아 — 남색 장발과 자줏빛 눈, 장식적인 블라우스를 입은 화가",
+      tag: "몰락한 이름을 쓰는 화가. 시선을 먼저 붙잡습니다.",
+      look: "자줏빛 눈과 남색 장발. 장식이 많은 블라우스와 긴 스커트. 한 번 보면 다시 돌아보게 되는 미인입니다.",
+      voice: "까칠한 존댓말이 기본. 친밀해지면 반말이 됩니다. 비유는 우아하지만 칭찬에는 냉소가 섞입니다.",
+      rumor: [
+        "로지에의 온실을 화실처럼 쓰고 있다고 합니다.",
+        "진심을 말할 때만 문장이 짧고 꾸밈없어진다는 이야기가 돕니다."
+      ],
+      quote: "Il est facile de dire qu’une fleur est belle. Bien peu lui donnent encore le même nom une fois fanée."
+    },
+    {
+      id: "cassia", name: "카시아 베르모트", en: "Cassia Vermot",
+      age: 31, height: "171cm", job: "사교계 명사 · 공연 기획자",
+      homeId: "etherla", home: "에델라 시",
+      tone: ["#5A3418", "#C68A46"], em: EM.mask,
+      alt: "카시아 베르모트 — 구리빛 포니테일과 보석 장갑, 유행하는 연미복을 입은 사교계 명사",
+      tag: "에델라 극장가의 이름. 어느 자리에서든 중심입니다.",
+      look: "검은 눈과 구리빛 포니테일, 갈색 피부. 유행을 앞선 연미복에 보석이 박힌 장갑을 낍니다.",
+      voice: "화려하고 자신감 있는 반말. 리듬감 있게 단정하며, 칭찬과 도발을 한 호흡에 던집니다.",
+      rumor: [
+        "그녀가 기획한 공연은 첫날 밤 표가 남지 않는다고 합니다.",
+        "무시당하는 일을 가장 견디지 못한다는 말이 사교계에 퍼져 있습니다."
+      ],
+      quote: "Si les gens veulent me regarder, c’est parce que j’ai su leur en donner envie."
+    },
+    {
+      id: "orphe", name: "오르페 마티엘", en: "Orphe Matiel",
+      age: 36, height: "176cm", job: "전직 성악가 · 주점 연주자",
+      homeId: "marein", home: "마레인",
+      tone: ["#1B2230", "#546B85"], em: EM.note,
+      alt: "오르페 마티엘 — 검은 곱슬 장발에 낡은 코트와 풀린 넥타이를 한 주점 연주자",
+      tag: "마레인 주점의 밤을 채우는 연주자.",
+      look: "탁한 청색 눈과 검은 곱슬 장발. 낡은 코트에 넥타이는 늘 풀려 있고, 호리호리한 체형입니다.",
+      voice: "느슨하고 유쾌한 반말. 재치 있는 비유로 무거운 이야기를 가볍게 넘깁니다.",
+      rumor: [
+        "한때 큰 무대에 섰다는 소문이 있지만, 본인은 웃어넘긴다고 합니다.",
+        "취했을 때보다 맑은 밤에 더 불안정해 보인다는 말이 있습니다."
+      ],
+      quote: "Je ne bois pas pour oublier. Quand un souvenir devient trop net, il faut bien le regarder à travers un peu de brume."
+    },
+    {
+      id: "darion", name: "다리온 헤이브릭", en: "Darion Heibric",
+      age: 38, height: "173cm", job: "무역 상회 대표 · 투자가",
+      homeId: "etherla", home: "에델라 시",
+      tone: ["#3F4247", "#B4B2AA"], em: EM.ledger,
+      alt: "다리온 헤이브릭 — 백금빛 단발과 금속테 안경, 맞춤 코트를 입은 무역 상회 대표",
+      tag: "무역 상회 대표. 질문보다 제안을 먼저 내밉니다.",
+      look: "흑갈색 눈과 백금빛 단발. 맞춤 코트와 금속테 안경. 자세가 곧고 흐트러짐이 없습니다.",
+      voice: "격식 있는 존댓말. 정확한 단어를 골라 쓰고, 동요할수록 숫자와 조건을 늘어놓습니다.",
+      rumor: [
+        "호의를 베풀고도 그것을 빚으로 남기지 않는다는 평이 있습니다.",
+        "감정이 개입된 자리에서 오히려 더 냉정한 계약서를 꺼낸다고 합니다."
+      ],
+      quote: "Dire qu’une chose n’a pas de prix signifie généralement que personne n’a encore calculé ce qu’il en coûterait de la perdre."
+    },
+    {
+      id: "yunat", name: "유나트 솔베", en: "Yunat Solve",
+      age: 30, height: "169cm", job: "전자기 관리인 · 시계탑 지기",
+      homeId: "marein", home: "마레인",
+      tone: ["#4A3526", "#A98A63"], em: EM.lamp,
+      alt: "유나트 솔베 — 밤색으로 땋은 머리와 작업 망토, 낡은 부츠를 신은 시계탑 지기",
+      tag: "마레인의 시계탑과 저녁 가로등을 지키는 사람.",
+      look: "연한 회색 눈과 밤색으로 땋은 머리. 작업 망토와 낡은 부츠, 거칠어진 손이 하루의 노동을 말해 줍니다.",
+      voice: "담백한 존댓말. 짧고 소박하며, 감정을 시간과 날씨에 빗대어 표현합니다.",
+      rumor: [
+        "아무도 보지 않는 밤에도 등을 하나씩 빠뜨리지 않는다고 합니다.",
+        "도움을 청하는 일이 거의 없어, 주변에서 먼저 살펴야 한다는 말이 있습니다."
+      ],
+      quote: "Il faut allumer les réverbères même lorsque personne ne les regarde. Ceux qui se sont égarés s’en aperçoivent souvent trop tard."
+    },
+    {
+      id: "firen", name: "피렌 아스토르", en: "Firen Astor",
+      age: 41, height: "172cm", job: "왕립지리원 수석 지리학자",
+      homeId: "etherla", home: "에델라 시",
+      tone: ["#5E2A22", "#B87058"], em: EM.dividers,
+      alt: "피렌 아스토르 — 흰빛이 섞인 적색 단발에 학자복과 지도통, 단안경을 낀 지리학자",
+      tag: "왕립지리원 수석. 지도를 사랑하고, 출발에는 신중합니다.",
+      look: "짙은 갈색 눈과 흰빛이 섞인 적색 단발. 학자복에 어깨로 멘 지도통, 그리고 단안경.",
+      voice: "정제된 존댓말. 논리가 앞서고, 상대가 쓴 단어의 정의를 먼저 바로잡습니다.",
+      rumor: [
+        "여행자의 증언을 몇 번이고 검증한 뒤에야 지도에 한 줄을 올린다고 합니다.",
+        "호기심을 보인 직후에 위험과 오류를 길게 열거하는 습관이 있습니다."
+      ],
+      quote: "Ce n’est pas parce qu’un lieu ne figure sur aucune carte qu’il n’existe pas. Mais pour l’y inscrire, encore faut-il que quelqu’un en revienne."
+    }
+  ];
+
+  var BY_ID = {};
+  PEOPLE.forEach(function (p) { BY_ID[p.id] = p; });
+
+  /* ----------------------------------------------------------
+     REGION SCENES (배경 이미지가 없을 때 쓰이는 SVG)
+     ---------------------------------------------------------- */
+  function scene(id) {
+    var u = "s" + (++UID);
+    var open = `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">`;
+    if (id === "etherla") {
+      return open + `<defs><linearGradient id="${u}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#0B2A2E"/><stop offset="0.6" stop-color="#255B52"/><stop offset="1" stop-color="#9C7A6A"/></linearGradient></defs>
+        <rect width="400" height="300" fill="url(#${u})"/>
+        <circle cx="316" cy="70" r="30" fill="#E6FAF1" opacity="0.9"/>
+        <g fill="#061A1E">
+          <rect x="20" y="196" width="46" height="104"/><polygon points="16,196 43,172 70,196"/>
+          <rect x="72" y="182" width="34" height="118"/><polygon points="68,182 89,158 110,182"/>
+          <rect x="128" y="150" width="26" height="150"/><polygon points="124,150 141,110 158,150"/>
+          <rect x="164" y="200" width="52" height="100"/><polygon points="160,200 190,176 220,200"/>
+          <rect x="228" y="168" width="60" height="132"/><polygon points="252,168 258,120 264,168"/><polygon points="268,168 274,128 280,168"/>
+          <rect x="300" y="204" width="44" height="96"/><ellipse cx="322" cy="204" rx="24" ry="16"/>
+          <rect x="352" y="188" width="40" height="112"/><polygon points="348,188 372,164 396,188"/>
+        </g>
+        <g fill="#9BF0DD" opacity="0.85">
+          <rect x="30" y="214" width="5" height="8"/><rect x="46" y="214" width="5" height="8"/><rect x="30" y="238" width="5" height="8"/>
+          <rect x="82" y="202" width="5" height="8"/><rect x="94" y="202" width="5" height="8"/>
+          <rect x="176" y="220" width="5" height="8"/><rect x="196" y="220" width="5" height="8"/>
+          <rect x="244" y="196" width="6" height="9"/><rect x="266" y="196" width="6" height="9"/>
+          <rect x="362" y="210" width="5" height="8"/><rect x="378" y="210" width="5" height="8"/>
+        </g>
+        <g stroke="#061A1E" stroke-width="3"><path d="M112 300v-52M290 300v-44"/></g>
+        <circle cx="112" cy="242" r="9" fill="#9BF0DD" opacity="0.75"/>
+        <circle cx="290" cy="252" r="8" fill="#9BF0DD" opacity="0.7"/>
+        <ellipse cx="200" cy="286" rx="230" ry="16" fill="#DCEFE8" opacity="0.28"/>
+      </svg>`;
+    }
+    if (id === "beluar") {
+      return open + `<defs><linearGradient id="${u}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1B4C50"/><stop offset="0.5" stop-color="#77A38F"/><stop offset="1" stop-color="#C7B689"/></linearGradient></defs>
+        <rect width="400" height="300" fill="url(#${u})"/>
+        <circle cx="86" cy="58" r="22" fill="#F0F8F2" opacity="0.7"/>
+        <g stroke="#F0F8F2" stroke-opacity="0.5" fill="none"><path d="M300 52c6-5 12-5 17 0M322 44c5-4 10-4 14 0"/></g>
+        <path d="M0 186c60-16 120-6 178-14 62-8 140-20 222-6v120H0z" fill="#5F8A6E" opacity="0.85"/>
+        <path d="M0 214c70-14 130 2 200-6 66-8 130-14 200-2v94H0z" fill="#43704F"/>
+        <g fill="#2C1F17" opacity="0.7"><rect x="266" y="164" width="30" height="22"/><polygon points="262,164 281,148 300,164"/><rect x="300" y="172" width="14" height="14"/></g>
+        <g stroke="#2E5540" stroke-width="1.6" stroke-linecap="round" opacity="0.9">
+          <path d="M14 300c2-30-2-48-8-64M34 300c0-34 4-50 10-66M56 300c-2-28 2-46 8-60M84 300c1-32-3-50-9-66M108 300c0-30 4-48 10-62M134 300c-2-34 2-52 8-68M160 300c1-28-3-44-9-58M188 300c0-32 4-50 10-64M214 300c-2-30 2-48 8-62M242 300c1-34-3-52-9-66M268 300c0-28 4-44 10-58M296 300c-2-32 2-50 8-64M322 300c1-30-3-46-9-60M350 300c0-34 4-52 10-66M376 300c-2-28 2-44 8-58"/>
+        </g>
+        <ellipse cx="200" cy="196" rx="240" ry="14" fill="#E8F4EC" opacity="0.22"/>
+      </svg>`;
+    }
+    if (id === "rosier") {
+      return open + `<defs><linearGradient id="${u}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2C5B58"/><stop offset="0.55" stop-color="#87A79A"/><stop offset="1" stop-color="#4C6350"/></linearGradient></defs>
+        <rect width="400" height="300" fill="url(#${u})"/>
+        <g fill="#EFEAE1">
+          <rect x="96" y="120" width="208" height="150"/>
+          <polygon points="88,120 200,72 312,120"/>
+          <rect x="180" y="60" width="40" height="62"/><polygon points="174,60 200,34 226,60"/>
+        </g>
+        <g fill="#2E4B44" opacity="0.85">
+          <rect x="118" y="150" width="22" height="34" rx="11"/><rect x="158" y="150" width="22" height="34" rx="11"/>
+          <rect x="220" y="150" width="22" height="34" rx="11"/><rect x="260" y="150" width="22" height="34" rx="11"/>
+          <rect x="188" y="212" width="24" height="58" rx="12"/>
+          <rect x="118" y="212" width="22" height="34" rx="11"/><rect x="260" y="212" width="22" height="34" rx="11"/>
+        </g>
+        <rect x="190" y="80" width="20" height="24" rx="10" fill="#2E4B44" opacity="0.8"/>
+        <g fill="#F6F1E8" opacity="0.95"><path d="M300 270v-52a34 34 0 0 1 68 0v52z" opacity="0.4"/><path d="M300 218a34 34 0 0 1 68 0" fill="none" stroke="#F6F1E8" stroke-width="2"/><path d="M334 184v86M300 240h68" stroke="#F6F1E8" stroke-width="1.4"/></g>
+        <g stroke="#2E5540" stroke-width="2" fill="none" opacity="0.95">
+          <path d="M96 270c0-40 8-70 26-96M304 270c0-40-8-70-26-96"/>
+          <path d="M104 226c10-6 18-4 24 4M116 194c10-6 18-4 24 4M290 226c-10-6-18-4-24 4M278 194c-10-6-18-4-24 4"/>
+        </g>
+        <g fill="#7C2B38">
+          <circle cx="102" cy="240" r="5"/><circle cx="112" cy="206" r="4"/><circle cx="126" cy="176" r="4.5"/>
+          <circle cx="298" cy="240" r="5"/><circle cx="288" cy="206" r="4"/><circle cx="274" cy="176" r="4.5"/>
+        </g>
+        <rect y="268" width="400" height="32" fill="#3C5343"/>
+        <g fill="#B98D5C" opacity="0.7"><ellipse cx="60" cy="284" rx="8" ry="3"/><ellipse cx="150" cy="290" rx="7" ry="3"/><ellipse cx="250" cy="282" rx="9" ry="3"/><ellipse cx="340" cy="292" rx="7" ry="3"/></g>
+      </svg>`;
+    }
+    if (id === "marein") {
+      return open + `<defs><linearGradient id="${u}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#12333A"/><stop offset="0.6" stop-color="#4E6B6A"/><stop offset="1" stop-color="#A98A66"/></linearGradient></defs>
+        <rect width="400" height="300" fill="url(#${u})"/>
+        <g opacity="0.9"><ellipse cx="292" cy="72" rx="52" ry="19" fill="#0C2429"/><path d="M340 72l16-9v18z" fill="#0C2429"/><path d="M286 91h14l-2 9h-10z" fill="#0C2429"/></g>
+        <g fill="none" stroke="#0C2429" stroke-width="2.4" opacity="0.85">
+          <circle cx="88" cy="150" r="34"/><circle cx="88" cy="150" r="11"/>
+          <path d="M88 116v-9M88 184v9M54 150h-9M122 150h9M64 126l-7-7M112 174l7 7M112 126l7-7M64 174l-7 7"/>
+          <circle cx="150" cy="196" r="20"/><circle cx="150" cy="196" r="6"/>
+          <path d="M150 176v-6M150 216v6M130 196h-6M170 196h6"/>
+        </g>
+        <g fill="#0C2429">
+          <rect x="228" y="150" width="46" height="150"/><polygon points="222,150 251,116 280,150"/>
+          <rect x="300" y="182" width="34" height="118"/><rect x="344" y="204" width="46" height="96"/>
+          <rect x="20" y="216" width="52" height="84"/><rect x="86" y="238" width="40" height="62"/>
+        </g>
+        <circle cx="251" cy="184" r="19" fill="none" stroke="#9BF0DD" stroke-width="2.4" opacity="0.85"/>
+        <path d="M251 184v-11M251 184l8 6" stroke="#9BF0DD" stroke-width="2" opacity="0.85"/>
+        <g fill="#9BF0DD" opacity="0.8"><rect x="30" y="234" width="6" height="9"/><rect x="50" y="234" width="6" height="9"/><rect x="96" y="256" width="6" height="9"/><rect x="310" y="200" width="6" height="9"/><rect x="356" y="222" width="6" height="9"/></g>
+        <g stroke="#DDEFE8" stroke-width="3" fill="none" opacity="0.4" stroke-linecap="round">
+          <path d="M318 182c8-12-6-20 2-32M356 204c8-12-6-20 2-30"/>
+        </g>
+        <ellipse cx="200" cy="290" rx="230" ry="16" fill="#E2EFE9" opacity="0.22"/>
+      </svg>`;
+    }
+    return open + `<defs><linearGradient id="${u}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#08202A"/><stop offset="0.55" stop-color="#28564F"/><stop offset="1" stop-color="#B3907A"/></linearGradient></defs>
+      <rect width="400" height="300" fill="url(#${u})"/>
+      <g fill="#E6FAF1"><circle cx="60" cy="46" r="1.8"/><circle cx="130" cy="30" r="1.4"/><circle cx="210" cy="56" r="1.6"/><circle cx="290" cy="34" r="1.3"/><circle cx="350" cy="66" r="1.7"/><circle cx="96" cy="82" r="1.2"/><circle cx="256" cy="96" r="1.2"/></g>
+      <circle cx="330" cy="58" r="20" fill="#E6FAF1" opacity="0.8"/>
+      <path d="M0 300c90-40 130-96 400-120v120z" fill="#123B3A" opacity="0.8"/>
+      <path d="M40 300c60-56 150-96 360-108" fill="none" stroke="#EFE7D8" stroke-width="3" stroke-dasharray="10 12" opacity="0.7"/>
+      <g fill="#07171C"><rect x="270" y="150" width="4" height="42"/><rect x="252" y="150" width="40" height="12"/></g>
+      <g fill="#07171C" transform="translate(150,214)">
+        <circle cx="0" cy="-26" r="8"/><path d="M-6-16h12l3 26h-18z"/><path d="M-3 10l-6 22h5l5-16M3 10l6 22h-5l-5-16"/>
+        <rect x="10" y="-6" width="16" height="13" rx="2"/><path d="M14-6v-4h8v4" fill="none" stroke="#07171C" stroke-width="1.6"/>
+      </g>
+      <ellipse cx="200" cy="284" rx="240" ry="16" fill="#E8F4EC" opacity="0.2"/>
+    </svg>`;
+  }
+
+  /* ----------------------------------------------------------
+     REGIONS
+     ---------------------------------------------------------- */
+  var REGIONS = {
+    etherla: {
+      name: "에델라 시", fr: "La capitale Etherla", kind: "수도",
+      alt: "에델라 시 — 안개 낀 항구와 첨탑, 저녁 가로등이 켜진 수도의 거리",
+      desc: "왕궁과 극장, 도서관, 사교장, 상점가와 교회가 한 도시 안에 겹쳐 있습니다. 귀족과 예술가, 사업가가 모여드는 화려한 거리. 저녁이면 가로등이 순서대로 켜지고, 항구에서 올라온 안개가 오래된 석조 건물 사이를 천천히 지나갑니다.",
+      chars: ["savel", "cassia", "firen", "darion"]
+    },
+    beluar: {
+      name: "벨루아 평원", fr: "Prairie de Beluar", kind: "북부",
+      alt: "벨루아 평원 — 사람 키보다 높게 자란 풀과 멀리 보이는 오래된 저택",
+      desc: "북부의 넓은 초원. 오래된 귀족 저택과 농지가 드문드문 흩어져 있습니다. 풀이 사람 키보다 높게 자라 걷기가 쉽지 않고, 바람이 지날 때마다 초원 전체가 한 방향으로 눕습니다.",
+      chars: [],
+      note: "평원 안쪽에 로지에 저택이 있습니다. 지도에서 저택 표식을 눌러 보세요."
+    },
+    rosier: {
+      name: "로지에 저택", fr: "Maison Rosier", kind: "벨루아 평원",
+      alt: "로지에 저택 — 흰 석조 벽과 오래된 장미 덩굴, 온실과 전망탑이 있는 저택",
+      desc: "흰 석조 벽과 오래된 장미 덩굴, 넓은 정원과 온실, 그리고 전망탑. 아름답지만 어딘가 쓸쓸합니다. 가문이 몰락한 뒤 비어 있던 자리에 사람들이 하나둘 흘러들어왔고, 그래서 이 집은 늘 무언가가 부족합니다 — 양초조차.",
+      chars: ["theona", "miela", "isera"]
+    },
+    marein: {
+      name: "마레인", fr: "Ville de Marein", kind: "서부",
+      alt: "마레인 — 증기와 기어, 비행선과 시계탑이 있는 기술 도시",
+      desc: "서부의 기술 중심지. 증기와 기어, 비행선과 열기구가 이곳에서 태어납니다. 공방의 불빛이 밤늦게까지 꺼지지 않고, 시계탑의 종이 하루를 조각냅니다.",
+      chars: ["yunat", "orphe"]
+    },
+    wander: {
+      name: "방랑의 길", fr: "Sans demeure", kind: "지도 밖",
+      alt: "방랑의 길 — 별빛 아래 점선처럼 이어진 길과 가방을 든 여행자",
+      desc: "어떤 이는 지도에 주소를 두지 않습니다. 항구에서 평원으로, 도시에서 다시 이름 없는 길로. 세르반이 여행자를 유난히 예우하는 이유이기도 합니다.",
+      chars: ["ailen"]
+    }
+  };
+
+  var ATMOS = [
+    "안개 낀 항구 도시", "오래된 석조 건물", "붉은 지붕의 마을", "촛불이 켜진 저택",
+    "저녁마다 밝혀지는 가로등", "낙엽이 쌓이는 정원", "오래된 책과 손으로 쓴 편지",
+    "끝나가는 것들의 아름다움", "청록색의 독특한 하늘"
+  ];
+  /* ----------------------------------------------------------
+     HELPERS
+     ---------------------------------------------------------- */
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function noop() {}
+
+  /* 초상 자리 — 아직 판이 새겨지지 않은 도판.
+     사선 해칭(engraving hatch)과 타원 액자만 남겨 두었습니다. */
+  function portrait(c) {
+    var u = "g" + (++UID);
+    return `<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${c.alt}">
+      <defs>
+        <linearGradient id="${u}a" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="${c.tone[0]}"/><stop offset="1" stop-color="${c.tone[1]}"/>
+        </linearGradient>
+        <radialGradient id="${u}b" cx="50%" cy="32%" r="70%">
+          <stop offset="0" stop-color="#F4EFE7" stop-opacity="0.32"/><stop offset="1" stop-color="#0B0908" stop-opacity="0.55"/>
+        </radialGradient>
+        <pattern id="${u}h" width="7" height="7" patternTransform="rotate(42)" patternUnits="userSpaceOnUse">
+          <line x1="0" y1="0" x2="0" y2="7" stroke="#0B0908" stroke-opacity="0.2" stroke-width="1.1"/>
+        </pattern>
+        <pattern id="${u}h2" width="11" height="11" patternTransform="rotate(-38)" patternUnits="userSpaceOnUse">
+          <line x1="0" y1="0" x2="0" y2="11" stroke="#F4EFE7" stroke-opacity="0.1" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="300" height="400" fill="url(#${u}a)"/>
+      <rect width="300" height="400" fill="url(#${u}h)"/>
+      <rect width="300" height="400" fill="url(#${u}h2)"/>
+      <rect width="300" height="400" fill="url(#${u}b)"/>
+      <g fill="none" stroke="#F4EFE7">
+        <ellipse cx="150" cy="168" rx="86" ry="108" stroke-opacity="0.34"/>
+        <ellipse cx="150" cy="168" rx="80" ry="102" stroke-opacity="0.15" stroke-dasharray="2 5"/>
+      </g>
+      <g transform="translate(126,144)" fill="none" stroke="#F7F2EA" stroke-opacity="0.92" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${c.em}</g>
+      <g stroke="#D8BE93" stroke-opacity="0.6"><path d="M112 300h76"/><path d="M150 296v8"/></g>
+      <text x="150" y="332" text-anchor="middle" font-family="Bodoni Moda, Georgia, serif" font-style="italic" font-size="21" fill="#F7F2EA" fill-opacity="0.96">${c.en}</text>
+      <text x="150" y="356" text-anchor="middle" font-family="Hahmlet, Gowun Batang, serif" font-size="11" letter-spacing="2" fill="#F7F2EA" fill-opacity="0.58">${c.job}</text>
+      <text x="150" y="380" text-anchor="middle" font-family="Spline Sans Mono, monospace" font-size="7.5" letter-spacing="2.6" fill="#E4CBA0" fill-opacity="0.5">PLANCHE NON GRAVÉE</text>
+    </svg>`;
+  }
+
+  /* 명부에 붙는 작은 카메오. 도판집에 끼워 넣은 인화지 조각처럼,
+     종이 바탕 위에 타원 하나와 잉크 부호만. 34px에서 읽히는 건 그것뿐입니다. */
+  function avatar(c) {
+    var u = "v" + (++UID);
+    return `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <radialGradient id="${u}" cx="50%" cy="42%" r="62%">
+          <stop offset="0" stop-color="${c.tone[1]}" stop-opacity="0.5"/>
+          <stop offset="1" stop-color="${c.tone[0]}" stop-opacity="0.92"/>
+        </radialGradient>
+        <pattern id="${u}h" width="5" height="5" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+          <line x1="0" y1="0" x2="0" y2="5" stroke="#1F1A16" stroke-opacity="0.16" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100" height="100" fill="#EBE3D5"/>
+      <rect width="100" height="100" fill="url(#${u}h)"/>
+      <ellipse cx="50" cy="48" rx="40" ry="44" fill="url(#${u})"/>
+      <ellipse cx="50" cy="48" rx="40" ry="44" fill="none" stroke="#1F1A16" stroke-opacity="0.35"/>
+      <g transform="translate(26,26)" fill="none" stroke="#F7F2E9" stroke-opacity="0.95" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${c.em}</g>
+      <rect x="1.5" y="1.5" width="97" height="97" fill="none" stroke="#1F1A16" stroke-opacity="0.28"/>
+    </svg>`;
+  }
+
+  /* 이미지가 있으면 덮어쓰고, 없으면 SVG가 그대로 남습니다. */
+  function figure(host, src, alt, fallback) {
+    host.innerHTML = fallback;
+    var img = document.createElement("img");
+    img.alt = alt;
+    img.decoding = "async";
+    img.addEventListener("load", function () { img.classList.add("loaded"); });
+    img.addEventListener("error", function () { if (img.parentNode) img.parentNode.removeChild(img); });
+    img.src = src;
+    host.appendChild(img);
+  }
+
+  /* ----------------------------------------------------------
+     문장(紋章) — 왕립지리원의 인장
+     기구의 눈금이 새겨진 베젤 + 궤도 두 줄 + 모노그램 + 장미.
+     logo.png를 못 불러오는 환경에서도 빈 자리가 남지 않게 합니다.
+     ---------------------------------------------------------- */
+  function crest() {
+    var ticks = "";
+    for (var i = 0; i < 48; i++) {
+      var a = (i / 48) * Math.PI * 2;
+      var big = i % 12 === 0;
+      var mid = i % 4 === 0;
+      var r2 = big ? 40 : mid ? 43.5 : 45.8;
+      ticks +=
+        '<line x1="' + (60 + Math.cos(a) * 48.4).toFixed(2) + '" y1="' + (60 + Math.sin(a) * 48.4).toFixed(2) +
+        '" x2="' + (60 + Math.cos(a) * r2).toFixed(2) + '" y2="' + (60 + Math.sin(a) * r2).toFixed(2) +
+        '" stroke-opacity="' + (big ? 0.9 : mid ? 0.55 : 0.3) + '"/>';
+    }
+    var u = "cr" + (++UID);
+    return `<svg class="crest" viewBox="0 0 120 120" role="img" aria-label="세르반 왕립지리원의 인장">
+      <defs>
+        <radialGradient id="${u}" cx="50%" cy="36%" r="72%">
+          <stop offset="0" stop-color="#DEC08A" stop-opacity="0.22"/>
+          <stop offset="0.6" stop-color="#DEC08A" stop-opacity="0.05"/>
+          <stop offset="1" stop-color="#DEC08A" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="60" cy="60" r="56" fill="url(#${u})"/>
+      <g fill="none" stroke="#DEC08A" stroke-width="1" stroke-linecap="round">
+        <circle cx="60" cy="60" r="56" stroke-opacity="0.8"/>
+        <circle cx="60" cy="60" r="52.5" stroke-opacity="0.35"/>
+        <circle cx="60" cy="60" r="49.5" stroke-opacity="0.18" stroke-dasharray="1 5"/>
+        <g class="bezel">${ticks}</g>
+        <ellipse cx="60" cy="60" rx="37" ry="13.5" stroke-opacity="0.42" transform="rotate(-17 60 60)"/>
+        <ellipse cx="60" cy="60" rx="31" ry="10" stroke-opacity="0.24" transform="rotate(26 60 60)"/>
+      </g>
+      <text x="60" y="78" text-anchor="middle" font-family="Bodoni Moda, Georgia, serif" font-style="italic"
+            font-size="52" fill="#DEC08A" fill-opacity="0.95">S</text>
+      <g fill="none" stroke="#DEC08A" stroke-width="1.1" stroke-linecap="round" stroke-opacity="0.85">
+        <path d="M60 15v8M56 19h8M57.2 16.2l5.6 5.6M62.8 16.2l-5.6 5.6"/>
+      </g>
+      <g fill="#DEC08A" fill-opacity="0.75">
+        <circle cx="60" cy="91" r="1.4"/><circle cx="55.9" cy="97" r="1.4"/><circle cx="64.1" cy="97" r="1.4"/>
+      </g>
+    </svg>`;
+  }
+
+  /* 후보 파일명을 차례로 시도합니다. 대소문자·경로·인코딩이 다른
+     환경에서도 로고가 붙도록. 모두 실패하면 인장이 남습니다. */
+  function loadMark(host) {
+    var names = ["logo.png", "./logo.png", "logo.PNG", "./logo.PNG", "Logo.png"];
+    var alt = host.getAttribute("data-alt") || "";
+    host.innerHTML = crest();
+    var img = document.createElement("img");
+    img.alt = alt;
+    if (!alt) img.setAttribute("aria-hidden", "true");
+    img.decoding = "async";
+    var i = 0;
+    img.addEventListener("load", function () {
+      img.classList.add("loaded");
+      host.classList.add("has-img");
+    });
+    img.addEventListener("error", function () {
+      i += 1;
+      if (i < names.length) img.src = names[i];
+      else if (img.parentNode) img.parentNode.removeChild(img);
+    });
+    host.appendChild(img);
+    img.src = names[0];
+  }
+  $$("[data-mark]").forEach(loadMark);
+
+  /* ----------------------------------------------------------
+     CHIPS / CARDS
+     ---------------------------------------------------------- */
+  function chipFor(cid) {
+    var c = BY_ID[cid];
+    var b = document.createElement("button");
+    b.className = "chip";
+    b.type = "button";
+    b.innerHTML = `<span class="av"></span><span><b>${c.name}</b><em>${c.job}</em></span>`;
+    figure(b.querySelector(".av"), "char-" + c.id + ".png", c.alt, avatar(c));
+    b.addEventListener("click", function () { openSheet(c.id); });
+    return b;
+  }
+
+  function cardFor(c) {
+    var b = document.createElement("button");
+    b.className = "pcard";
+    b.type = "button";
+    b.setAttribute("data-home", c.homeId);
+    var no = String(PEOPLE.indexOf(c) + 1);
+    if (no.length < 2) no = "0" + no;
+    b.innerHTML =
+      `<span class="idx">SVN·${no}</span>
+       <span class="figure"></span>
+       <span class="body">
+         <span class="em"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${c.em}</svg></span>
+         <span class="nm">${c.name}</span>
+         <span class="en">${c.en}</span>
+         <span class="job">${c.age}세 · ${c.job}</span>
+         <span class="tag">${c.tag}</span>
+       </span>`;
+    figure(b.querySelector(".figure"), "char-" + c.id + ".png", c.alt, portrait(c));
+    b.addEventListener("click", function () { openSheet(c.id); });
+    return b;
+  }
+
+  /* ----------------------------------------------------------
+     REGION PANEL
+     ---------------------------------------------------------- */
+  function showRegion(id) {
+    var r = REGIONS[id];
+    if (!r) return;
+    var host = $("#region");
+
+    var who = r.chars.length
+      ? '<div class="chips"></div>'
+      : '<p class="empty-note">' + (r.note || "이곳에 등록된 거주민은 없습니다.") + "</p>";
+
+    host.innerHTML =
+      '<div class="figure"></div>' +
+      '<div class="region-body">' +
+        '<p class="label">' + r.kind + "</p>" +
+        "<h3>" + r.name + "</h3>" +
+        '<span class="fr">' + r.fr + "</span>" +
+        '<p class="desc">' + r.desc + "</p>" +
+        '<div class="who"><div class="rule">Habitants · 이곳의 사람들</div>' + who + "</div>" +
+      "</div>";
+
+    figure($(".figure", host), "bg-" + id + ".png", r.alt, scene(id));
+
+    var chips = $(".chips", host);
+    if (chips) r.chars.forEach(function (cid) { chips.appendChild(chipFor(cid)); });
+
+    $$("#map .zone, #map .pin").forEach(function (n) { n.classList.remove("on"); });
+    var zone = $("#z-" + id);
+    if (zone) zone.classList.add("on");
+    var pin = $("#p-" + id);
+    if (pin) pin.classList.add("on");
+    if (id === "rosier") { var bz = $("#z-beluar"); if (bz) bz.classList.add("on"); }
+
+    host.classList.add("open");
+  }
+
+  /* ----------------------------------------------------------
+     CHARACTER SHEET
+     ---------------------------------------------------------- */
+  var modal = $("#modal");
+  var lastFocus = null;
+
+  function openSheet(id) {
+    var c = BY_ID[id];
+    if (!c) return;
+    lastFocus = document.activeElement;
+
+    figure($("#sheetFig"), "char-" + c.id + ".png", c.alt, portrait(c));
+
+    $("#sheetBody").innerHTML =
+      '<p class="label">' + c.home + "</p>" +
+      '<h2 id="sheetName">' + c.name + "</h2>" +
+      '<p class="en">' + c.en + "</p>" +
+      '<div class="meta">' +
+        '<span class="hi">' + c.age + "세</span>" +
+        "<span>" + c.height + "</span>" +
+        "<span>" + c.job + "</span>" +
+      "</div>" +
+      '<div class="field"><div class="rule">Apparence · 첫인상</div><p>' + c.look + "</p></div>" +
+      '<div class="field"><div class="rule">Voix · 말투</div><p>' + c.voice + "</p></div>" +
+      '<div class="field"><div class="rule">On raconte · 들리는 이야기</div>' +
+        c.rumor.map(function (t) { return "<p>" + t + "</p>"; }).join("") +
+      "</div>" +
+      '<div class="said"><p>' + c.quote + ' »</p><span>Paroles rapportées · 전해 들은 말</span></div>';
+
+    modal.classList.add("open");
+    document.body.classList.add("locked");
+    $("#sheet").scrollTop = 0;
+    $("#sheetClose").focus();
+  }
+
+  function closeSheet() {
+    modal.classList.remove("open");
+    document.body.classList.remove("locked");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  $("#sheetClose").addEventListener("click", closeSheet);
+  modal.addEventListener("click", function (e) { if (e.target === modal) closeSheet(); });
+
+  /* ----------------------------------------------------------
+     PEOPLE GRID + FILTERS
+     ---------------------------------------------------------- */
+  var grid = $("#people-grid");
+  PEOPLE.forEach(function (c) { grid.appendChild(cardFor(c)); });
+
+  var FILTERS = [
+    { id: "all", label: "전체 10인" },
+    { id: "etherla", label: "에델라 시" },
+    { id: "marein", label: "마레인" },
+    { id: "rosier", label: "로지에 저택" },
+    { id: "wander", label: "방랑" }
+  ];
+  var fbox = $("#filters");
+  FILTERS.forEach(function (f, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = f.label;
+    if (i === 0) b.classList.add("on");
+    b.addEventListener("click", function () {
+      $$("button", fbox).forEach(function (x) { x.classList.remove("on"); });
+      b.classList.add("on");
+      $$(".pcard", grid).forEach(function (card) {
+        card.classList.toggle("hide", f.id !== "all" && card.getAttribute("data-home") !== f.id);
+      });
+    });
+    fbox.appendChild(b);
+  });
+
+  /* ----------------------------------------------------------
+     MAP
+     ---------------------------------------------------------- */
+  $$("[data-zone]").forEach(function (node) {
+    var id = node.getAttribute("data-zone");
+    node.addEventListener("click", function () { showRegion(id); });
+    node.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); showRegion(id); }
+    });
+  });
+
+  /* ----------------------------------------------------------
+     ATMOSPHERE MARQUEE
+     ---------------------------------------------------------- */
+  var atmos = $("#atmos");
+  var line = ATMOS.map(function (t) { return "<span>" + t + "</span>"; }).join("");
+  atmos.innerHTML = line + line;
+
+  /* ----------------------------------------------------------
+     HERO DECORATION
+     ---------------------------------------------------------- */
+  (function () {
+    var box = $("#stars"), i, s, n = 46;
+    for (i = 0; i < n; i++) {
+      s = document.createElement("i");
+      var r = Math.random();
+      var size = r > 0.9 ? 3 : r > 0.6 ? 2 : 1.4;
+      s.style.width = size + "px";
+      s.style.height = size + "px";
+      s.style.left = (Math.random() * 100).toFixed(2) + "%";
+      s.style.top = (Math.random() * 100).toFixed(2) + "%";
+      s.style.setProperty("--dur", (3.5 + Math.random() * 5).toFixed(2) + "s");
+      s.style.setProperty("--dl", (Math.random() * 7).toFixed(2) + "s");
+      box.appendChild(s);
+    }
+
+    /* 떨어지는 잎을 세 층으로 나눕니다.
+       가까운 층은 크고 흐리고 빠르게, 먼 층은 작고 선명하고 느리게 —
+       공기가 사이에 끼어 있다는 뜻입니다. */
+    var lv = $("#leaves");
+    var tints = ["#79202F", "#A9555F", "#8A7F70", "#3F6E63", "#A9834A"];
+    var LAYERS = [
+      { n: 5,  size: [26, 40], dur: [9, 15],  blur: 2.4, op: 0.34, dx: 260 },
+      { n: 7,  size: [14, 21], dur: [15, 24], blur: 0.7, op: 0.5,  dx: 180 },
+      { n: 10, size: [7, 11],  dur: [24, 38], blur: 0,   op: 0.42, dx: 110 }
+    ];
+    LAYERS.forEach(function (L, li) {
+      for (var j = 0; j < L.n; j++) {
+        var d = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        d.setAttribute("viewBox", "0 0 16 16");
+        d.setAttribute("aria-hidden", "true");
+        var px = L.size[0] + Math.random() * (L.size[1] - L.size[0]);
+        d.style.width = px.toFixed(1) + "px";
+        d.style.height = px.toFixed(1) + "px";
+        d.style.left = (Math.random() * 100).toFixed(2) + "%";
+        d.style.filter = L.blur ? "blur(" + L.blur + "px)" : "";
+        d.style.setProperty("--op", L.op);
+        d.style.setProperty("--dur", (L.dur[0] + Math.random() * (L.dur[1] - L.dur[0])).toFixed(1) + "s");
+        d.style.setProperty("--dl", (Math.random() * 26).toFixed(1) + "s");
+        d.style.setProperty("--dx", (Math.random() * L.dx - L.dx / 2).toFixed(0) + "px");
+        d.style.zIndex = String(3 - li);
+        d.innerHTML = '<path d="M8 1c5 4 6 9 0 14C2 10 3 5 8 1z" fill="' + tints[(j + li) % tints.length] + '"/>';
+        lv.appendChild(d);
+      }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     LE PETIT PRINCE — 모자 / 보아뱀
+     ---------------------------------------------------------- */
+  (function () {
+    var d = $("#drawing"), cap = $("#drawCap"), on = false;
+    function flip() {
+      on = !on;
+      d.classList.toggle("revealed", on);
+      cap.innerHTML = on
+        ? "하지만 이것은 <b>코끼리를 삼킨 보아뱀</b>입니다.<br /><span class=\"hint\">다시 눌러 보세요</span>"
+        : "어른들은 이것을 <b>모자</b>라고 말했습니다.<br /><span class=\"hint\">눌러 보세요</span>";
+    }
+    d.addEventListener("click", flip);
+    d.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); }
+    });
+  })();
+
+  /* ----------------------------------------------------------
+     NAVIGATION
+     ---------------------------------------------------------- */
+  var nav = $("#nav"), rail = $("#rail"), menu = $("#menu"), burger = $("#burger");
+  var SECTIONS = ["home", "prince", "world", "people"];
+
+  function goTo(id) {
+    var t = document.getElementById(id);
+    if (!t) return;
+    menu.classList.remove("open");
+    burger.setAttribute("aria-expanded", "false");
+    t.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  $$("[data-to]").forEach(function (b) {
+    b.addEventListener("click", function () { goTo(b.getAttribute("data-to")); });
+  });
+
+  burger.addEventListener("click", function () {
+    var open = menu.classList.toggle("open");
+    burger.setAttribute("aria-expanded", String(open));
+  });
+
+  function syncScroll() {
+    var y = window.scrollY || window.pageYOffset;
+    var hero = document.getElementById("home");
+    nav.classList.toggle("solid", y > hero.offsetHeight - 120);
+
+    var active = SECTIONS[0];
+    SECTIONS.forEach(function (id) {
+      var s = document.getElementById(id);
+      if (s && s.getBoundingClientRect().top <= 140) active = id;
+    });
+    $$("#rail button, .nav-menu button").forEach(function (b) {
+      b.classList.toggle("on", b.getAttribute("data-to") === active);
+    });
+  }
+  window.addEventListener("scroll", syncScroll, { passive: true });
+  window.addEventListener("resize", syncScroll);
+
+  /* ----------------------------------------------------------
+     REVEAL
+     ---------------------------------------------------------- */
+  if ("IntersectionObserver" in window) {
+    document.body.classList.add("io");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var items = $$(".rv", en.target.parentNode);
+        en.target.style.transitionDelay = Math.min(items.indexOf(en.target), 4) * 0.09 + "s";
+        en.target.classList.add("in");
+        io.unobserve(en.target);
+      });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.06 });
+    $$(".rv").forEach(function (n) { io.observe(n); });
+  }
+
+  /* ----------------------------------------------------------
+     MUSIC PLAYER
+     ---------------------------------------------------------- */
+  var bgm = $("#bgm"), fab = $("#fab"), panel = $("#panel"), disc = $("#disc");
+  var play = $("#play"), icoPlay = $("#icoPlay"), icoPause = $("#icoPause");
+  var seek = $("#seek"), fill = $("#fill"), clock = $("#clock");
+  var vol = $("#vol"), lyBtn = $("#lyBtn"), lyrics = $("#lyrics"), warn = $("#warn");
+
+  /* 파일명이 한글인 탓에 환경마다 결과가 갈립니다.
+     같은 「물고기」라도 윈도우·깃허브는 조합형(NFC)으로, 맥은 분해형(NFD)으로
+     저장하기 때문에, 한쪽에서 올린 파일을 다른 쪽에서 찾지 못하는 일이 생깁니다.
+     그래서 두 정규화 형태 × (원문·퍼센트 인코딩) × (현재 폴더·상대경로) 를
+     차례로 두드려 보고, 그래도 실패하면 ASCII 이름을 시도합니다.
+     (bgm.mp3 로 이름만 바꿔 올려도 재생됩니다.) */
+  var CANDIDATES = (function () {
+    var out = [], seen = {};
+    var forms = ["NFC", "NFD"].map(function (f) {
+      return "".normalize ? "물고기".normalize(f) : "물고기";
+    });
+    forms.forEach(function (name) {
+      ["", "./"].forEach(function (dir) {
+        [".mp3", ".MP3"].forEach(function (ext) {
+          [dir + name + ext, dir + encodeURIComponent(name) + ext].forEach(function (u) {
+            if (!seen[u]) { seen[u] = 1; out.push(u); }
+          });
+        });
+      });
+    });
+    return out.concat(["bgm.mp3", "theme.mp3", "music.mp3"]);
+  })();
+  var srcIdx = 0, wantPlay = false, panelOpen = false, armed = false;
+
+  bgm.volume = 0.7;
+  bgm.src = CANDIDATES[0];
+
+  bgm.addEventListener("error", function () {
+    srcIdx += 1;
+    if (srcIdx < CANDIDATES.length) {
+      bgm.src = CANDIDATES[srcIdx];
+      bgm.load();
+      if (wantPlay) { var q = bgm.play(); if (q && q.catch) q.catch(noop); }
+    } else {
+      warn.classList.add("show");
+      paintPlaying(false);
+    }
+  });
+
+  /* 브라우저가 첫 재생을 거절하는 경우가 있습니다(자동재생 정책·버퍼 부족).
+     그때는 조용히 기다렸다가, 사용자가 다음으로 무언가를 건드리는 순간 다시 시도합니다. */
+  function armGesture() {
+    if (armed) return;
+    armed = true;
+    var retry = function () {
+      if (wantPlay && bgm.paused) {
+        var q = bgm.play();
+        if (q && q.catch) q.catch(noop);
+      }
+      if (!bgm.paused) {
+        ["pointerdown", "keydown", "touchstart"].forEach(function (t) {
+          document.removeEventListener(t, retry, true);
+        });
+        armed = false;
+      }
+    };
+    ["pointerdown", "keydown", "touchstart"].forEach(function (t) {
+      document.addEventListener(t, retry, true);
+    });
+  }
+
+  function paintPlaying(on) {
+    icoPlay.style.display = on ? "none" : "block";
+    icoPause.style.display = on ? "block" : "none";
+    fab.classList.toggle("playing", on);
+    disc.classList.toggle("spin", on);
+    play.setAttribute("aria-label", on ? "정지" : "재생");
+  }
+
+  function attempt() {
+    wantPlay = true;
+    var p = bgm.play();
+    if (p && p.then) {
+      p.then(function () { paintPlaying(true); })
+       .catch(function () { paintPlaying(false); armGesture(); });
+    }
+  }
+
+  function toggleAudio() {
+    if (bgm.paused) attempt();
+    else { wantPlay = false; bgm.pause(); paintPlaying(false); }
+  }
+
+  bgm.addEventListener("play", function () { paintPlaying(true); });
+  bgm.addEventListener("pause", function () { paintPlaying(false); });
+
+  function mmss(t) {
+    if (!isFinite(t) || t < 0) t = 0;
+    var m = Math.floor(t / 60), s = Math.floor(t % 60);
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+  function paintTime() {
+    var d = bgm.duration || 0;
+    var pct = d ? (bgm.currentTime / d) * 100 : 0;
+    fill.style.width = pct.toFixed(2) + "%";
+    seek.setAttribute("aria-valuenow", String(Math.round(pct)));
+    clock.textContent = mmss(bgm.currentTime) + " / " + mmss(d);
+  }
+  bgm.addEventListener("timeupdate", paintTime);
+  bgm.addEventListener("loadedmetadata", paintTime);
+
+  play.addEventListener("click", toggleAudio);
+
+  function scrub(clientX) {
+    if (!bgm.duration) return;
+    var r = seek.getBoundingClientRect();
+    var ratio = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+    bgm.currentTime = ratio * bgm.duration;
+    paintTime();
+  }
+  seek.addEventListener("click", function (e) { scrub(e.clientX); });
+  seek.addEventListener("keydown", function (e) {
+    if (!bgm.duration) return;
+    if (e.key === "ArrowRight") { bgm.currentTime = Math.min(bgm.duration, bgm.currentTime + 5); e.preventDefault(); }
+    if (e.key === "ArrowLeft") { bgm.currentTime = Math.max(0, bgm.currentTime - 5); e.preventDefault(); }
+  });
+
+  vol.addEventListener("input", function () { bgm.volume = vol.value / 100; });
+
+  lyBtn.addEventListener("click", function () {
+    var open = lyrics.classList.toggle("open");
+    lyBtn.setAttribute("aria-expanded", String(open));
+    lyBtn.textContent = open ? "가사 닫기 · Fermer" : "가사 읽기 · Paroles";
+  });
+
+  function setPanel(open) {
+    panelOpen = open;
+    panel.classList.toggle("open", open);
+    fab.setAttribute("aria-expanded", String(open));
+  }
+  fab.addEventListener("click", function (e) { e.stopPropagation(); setPanel(!panelOpen); });
+  document.addEventListener("click", function (e) {
+    if (panelOpen && !$("#player").contains(e.target)) setPanel(false);
+  });
+
+  /* ----------------------------------------------------------
+     SPLASH · KEYS · BOOT
+     ---------------------------------------------------------- */
+  var splash = $("#splash");
+  var entered = false;
+
+  function enter() {
+    if (entered) return;
+    entered = true;
+    splash.classList.add("gone");
+    nav.classList.add("ready");
+    rail.classList.add("ready");
+    attempt();
+    window.setTimeout(function () { splash.setAttribute("hidden", "hidden"); }, 1200);
+  }
+  splash.addEventListener("click", enter);
+  splash.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); enter(); }
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (modal.classList.contains("open")) closeSheet();
+      else if (panelOpen) setPanel(false);
+    }
+  });
+
+  showRegion("etherla");
+  paintPlaying(false);
+  paintTime();
+  syncScroll();
+})();
+</script>
+</body>
+</html>
