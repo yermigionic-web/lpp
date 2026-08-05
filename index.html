@@ -1499,7 +1499,15 @@ footer.foot .fine {
 }
 @media (max-width: 860px) {
   #region.open, .sheet { grid-template-columns: 1fr; }
-  .sheet .figure { min-height: 0; aspect-ratio: 4 / 3; }
+  /* .sheet is height-capped and scrolls, so an aspect-ratio-only figure
+     resolves to a 0px grid row and paints over the text beneath it.
+     A definite height keeps the row real. */
+  .sheet .figure {
+    min-height: 0;
+    aspect-ratio: auto;
+    height: min(105vw, 48vh);
+    height: min(105vw, 48svh);
+  }
   .figure { min-height: 0; aspect-ratio: 16 / 9; }
   .nav-burger { display: grid; }
   .nav-menu {
